@@ -603,9 +603,17 @@ function updateRide(g, now) {
 function forceSend() { if (sharing && lastFix) { last = null; onFix(lastFix); } }
 async function loadGarage() {
   if (!sb || !session) return;
-  const r = await sb.from('vehicles').select('id,name').eq('user_id', uid()).order('created_at');
-  if (r.error) { $('garErr').textContent = 'Il garage non è ancora attivo: manca la tabella nel database.'; return; }
-  garage = r.data || []; drawGarage();
+  // prova prima con created_at; se la colonna manca nel database, riprova senza
+  let r = await sb.from('vehicles').select('id,name,created_at').eq('user_id', uid()).order('created_at');
+  if (r.error) r = await sb.from('vehicles').select('id,name').eq('user_id', uid());
+  if (r.error) {
+    const m = (r.error.message || '').toLowerCase();
+    $('garErr').textContent = r.error.code === 'PGRST205' || m.includes('schema cache')
+      ? 'Il garage non è ancora attivo: manca la tabella nel database.'
+      : 'Non riesco a leggere il garage (' + (r.error.message || 'errore') + ').';
+    return;
+  }
+  garage = r.data || []; $('garErr').textContent = ''; drawGarage();
 }
 function drawGarage() {
   const l = $('garList'), a = activeVeh(), [c, f] = pal(uid()); l.innerHTML = ''; $('stVeh').textContent = garage.length;
@@ -631,7 +639,7 @@ $('garForm').onsubmit = async e => {
   if (garage.length >= 6) return $('garErr').textContent = 'Il garage è pieno: massimo 6 mezzi.';
   await busy($('garBtn'), 'Aggiungo…', async () => {
     const r = await sb.from('vehicles').insert({ user_id: uid(), name: n }).select('id,name').maybeSingle();
-    if (r.error || !r.data) return $('garErr').textContent = 'Non sono riuscito ad aggiungere il mezzo. Riprova.';
+    if (r.error || !r.data) return $('garErr').textContent = 'Non sono riuscito ad aggiungere il mezzo' + (r.error ? ' (' + r.error.message + ')' : '') + '. Riprova.';
     garage.push(r.data); $('gName').value = ''; if (garage.length === 1) store('set', vehKey(), r.data.id); drawGarage(); forceSend();
   });
 };
