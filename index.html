@@ -1,583 +1,354 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TermonoNews</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-  /* Layout: schermata unica da telefono. Il gruppo di amici (cerchi con faccia) in alto, scheda con schede Accedi / Crea account nella zona del pollice. */
-  :root {
-    --bg: #F0EDFF;
-    --surface: #FFFFFF;
-    --field: #F7F5FF;
-    --ink: #1B1740;
-    --muted: #5C5880;
-    --line: #D8D3F1;
-    --accent: #5B3DF5;
-    --on-accent: #FFFFFF;
-    --danger: #B42318;
-    --c-pink: #FF5C8A;
-    --c-yellow: #FFC93C;
-    --c-teal: #2EC4B6;
-    --c-orange: #FF8A3D;
-    --face: #1B1740;
-    --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
-    --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #12102B;
-      --surface: #1C1A3F;
-      --field: #15133A;
-      --ink: #F0EEFF;
-      --muted: #A9A4D4;
-      --line: #34306B;
-      --accent: #8F7BFF;
-      --on-accent: #12102B;
-      --danger: #FF8A80;
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #12102B;
-    --surface: #1C1A3F;
-    --field: #15133A;
-    --ink: #F0EEFF;
-    --muted: #A9A4D4;
-    --line: #34306B;
-    --accent: #8F7BFF;
-    --on-accent: #12102B;
-    --danger: #FF8A80;
-    color-scheme: dark;
-  }
-
-  html, body { height: 100%; }
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.45;
-    -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
-  }
-  *, *::before, *::after { box-sizing: border-box; }
-  .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    margin: -1px; padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  .app {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding-block: 20px;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
-    max-width: 480px;
-    margin-inline: auto;
-  }
-
-  /* Marchio */
-  .brand { display: flex; flex-direction: column; gap: 10px; }
-  .pill {
-    align-self: flex-start;
-    margin: 0;
-    padding: 6px 12px;
-    font-size: 0.8125rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--on-accent);
-    background: var(--accent);
-    border-radius: 999px;
-  }
-  .brand-name {
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 2.75rem;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    overflow-wrap: anywhere;
-  }
-  .crew { display: block; width: 100%; height: auto; max-width: 100%; margin-top: 6px; overflow: visible; }
-  .bob { animation: bob 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-  .bob.b2 { animation-delay: 0.35s; }
-  .bob.b3 { animation-delay: 0.7s; }
-  .bob.b4 { animation-delay: 1.05s; }
-  .bob.b5 { animation-delay: 1.4s; }
-  @keyframes bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
-
-  /* Scheda */
-  .sheet {
-    margin-top: auto;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 24px;
-    padding: 16px 18px 18px;
-    box-shadow: 0 10px 30px rgba(40, 20, 120, 0.10);
-  }
-  .sheet h2 {
-    margin: 0 0 2px;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.625rem;
-    letter-spacing: -0.01em;
-  }
-  .lead { margin: 0 0 16px; color: var(--muted); font-size: 0.9375rem; }
-
-  /* Schede */
-  .tabs {
-    display: flex;
-    gap: 4px;
-    padding: 4px;
-    margin-bottom: 16px;
-    background: var(--field);
-    border: 1.5px solid var(--line);
-    border-radius: 16px;
-  }
-  .tab {
-    flex: 1;
-    min-width: 0;
-    height: 44px;
-    font: inherit;
-    font-size: 0.9375rem;
-    font-weight: 700;
-    color: var(--muted);
-    background: transparent;
-    border: 0;
-    border-radius: 12px;
-    cursor: pointer;
-  }
-  .tab[aria-selected="true"] { color: var(--on-accent); background: var(--accent); }
-
-  form { display: flex; flex-direction: column; gap: 14px; }
-  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-  .field label { font-weight: 600; font-size: 0.9375rem; }
-  .control { position: relative; display: flex; }
-  .control input {
-    width: 100%;
-    min-width: 0;
-    height: 52px;
-    padding: 0 14px;
-    font: inherit;
-    font-size: 16px; /* evita lo zoom automatico su iPhone */
-    color: var(--ink);
-    background: var(--field);
-    border: 1.5px solid var(--line);
-    border-radius: 14px;
-  }
-  .control input.has-toggle { padding-right: 86px; }
-  .control input::placeholder { color: var(--muted); opacity: 0.8; }
-  .control input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
-  .control input[aria-invalid="true"] { border-color: var(--danger); }
-  .toggle {
-    position: absolute;
-    right: 4px;
-    top: 4px;
-    height: 44px;
-    min-width: 72px;
-    padding: 0 12px;
-    font: inherit;
-    font-size: 0.9375rem;
-    font-weight: 700;
-    color: var(--accent);
-    background: transparent;
-    border: 0;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  .hint { margin: 0; font-size: 0.8125rem; color: var(--muted); }
-  .err { margin: 0; font-size: 0.875rem; color: var(--danger); }
-  .err:empty { display: none; }
-
-  .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-  .check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 0.9375rem; cursor: pointer; }
-  .check input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
-  .linkbtn {
-    min-height: 44px;
-    padding: 0 4px;
-    font: inherit;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--accent);
-    background: none;
-    border: 0;
-    cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .note {
-    margin: 0;
-    padding: 10px 12px;
-    font-size: 0.875rem;
-    color: var(--ink);
-    background: var(--field);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-  }
-
-  .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    height: 54px;
-    font: inherit;
-    font-size: 1.0625rem;
-    font-weight: 700;
-    color: var(--on-accent);
-    background: var(--accent);
-    border: 0;
-    border-radius: 16px;
-    cursor: pointer;
-  }
-  .btn:active { transform: translateY(1px); filter: brightness(0.95); }
-  .btn[disabled] { opacity: 0.75; cursor: progress; }
-  .btn.ghost { color: var(--ink); background: transparent; border: 1.5px solid var(--line); }
-  .spinner {
-    width: 18px; height: 18px;
-    border: 2.5px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
-    border-top-color: var(--on-accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .or {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 16px 0 12px;
-    font-size: 0.875rem;
-    color: var(--muted);
-  }
-  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-
-  .foot { margin: 0; text-align: center; font-size: 0.8125rem; color: var(--muted); }
-
-  button:focus-visible, .check input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .bob { animation: none; }
-    .spinner { animation-duration: 2s; }
-  }
+:root{--bg:#F0EDFF;--surface:#fff;--field:#F7F5FF;--ink:#1B1740;--muted:#5C5880;--line:#D8D3F1;--accent:#5B3DF5;--on:#fff;--danger:#B42318;--d:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;--b:"Figtree",system-ui,-apple-system,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#12102B;--surface:#1C1A3F;--field:#15133A;--ink:#F0EEFF;--muted:#A9A4D4;--line:#34306B;--accent:#8F7BFF;--on:#12102B;--danger:#FF8A80;color-scheme:dark}.leaflet-tile-pane{filter:brightness(.72) contrast(1.05)}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 var(--b);-webkit-tap-highlight-color:transparent}
+button,input{font:inherit}
+.app{min-height:100%;display:flex;flex-direction:column;gap:20px;max-width:480px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-left)) calc(20px + env(safe-area-inset-bottom))}
+.pill{align-self:flex-start;margin:0 0 10px;padding:6px 12px;font-size:.8125rem;font-weight:700;color:var(--on);background:var(--accent);border-radius:999px}
+h1{margin:0;font:800 2.75rem/.95 var(--d);letter-spacing:-.03em}
+.sheet{margin-top:auto;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:16px 18px 18px;box-shadow:0 10px 30px rgba(40,20,120,.1)}
+h2{margin:0 0 4px;font:700 1.625rem var(--d)}
+.lead{margin:0 0 16px;color:var(--muted)}
+.tabs{display:flex;gap:4px;padding:4px;margin-bottom:16px;background:var(--field);border:1.5px solid var(--line);border-radius:16px}
+.tab{flex:1;height:44px;color:var(--muted);font-weight:700;background:none;border:0;border-radius:12px;cursor:pointer}
+.tab[aria-selected=true]{color:var(--on);background:var(--accent)}
+form{display:flex;flex-direction:column;gap:14px}
+label{display:block;margin-bottom:6px;font-weight:600;font-size:.9375rem}
+input{width:100%;height:52px;padding:0 14px;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:14px}
+input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent)}
+input[aria-invalid=true]{border-color:var(--danger)}
+.err{margin:0;font-size:.875rem;color:var(--danger)}.err:empty{display:none}
+.note{margin:0 0 14px;padding:10px 12px;font-size:.875rem;background:var(--field);border:1px solid var(--line);border-radius:12px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:54px;font-size:1.0625rem;font-weight:700;color:var(--on);background:var(--accent);border:0;border-radius:16px;cursor:pointer}
+.btn.ghost{color:var(--ink);background:none;border:1.5px solid var(--line)}
+.btn.off{background:var(--ink);color:var(--surface)}
+.btn[disabled]{opacity:.7;cursor:progress}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.foot{margin:0;text-align:center;font-size:.8125rem;color:var(--muted)}
+.foot a{color:inherit}
+/* Home */
+.home{position:fixed;inset:0}
+#map{position:absolute;inset:0;background:var(--bg);font:inherit}
+.top,.dock{position:absolute;left:0;right:0;z-index:1000;pointer-events:none;display:flex;gap:8px;padding:0 12px}
+.top{top:0;padding-top:calc(10px + env(safe-area-inset-top));align-items:flex-start}
+.top>*,.dock>*{pointer-events:auto}
+.logo{flex:1;min-width:0;padding:8px 14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 4px 16px rgba(40,20,120,.15)}
+.logo b{display:block;font:800 1.25rem/1 var(--d);letter-spacing:-.02em}
+.logo span{font-size:.8125rem;color:var(--muted)}
+.sm{width:auto;height:48px;padding:0 16px;font-size:.9375rem;background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:0 4px 16px rgba(40,20,120,.15)}
+.dock{bottom:0;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+.card{width:100%;max-width:480px;margin:0 auto;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 30px rgba(40,20,120,.2)}
+.status{margin:8px 0 10px;font-size:.875rem;color:var(--muted)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.chip{flex:none;display:flex;align-items:center;gap:8px;height:44px;padding:0 12px 0 8px;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:999px;cursor:pointer}
+.chip i{width:26px;height:26px;border-radius:50%;border:2px solid var(--ink)}
+.chip small{color:var(--muted)}
+.empty{margin:0;font-size:.875rem;color:var(--muted)}
+/* Omini */
+.pinwrap{background:none;border:0}
+.pin{width:84px;display:flex;flex-direction:column;align-items:center}
+.man{width:40px;height:56px;overflow:visible;animation:hop 2.4s ease-in-out infinite}
+@keyframes hop{50%{transform:translateY(-4px)}}
+.tag{margin-top:-3px;max-width:84px;padding:2px 8px;font:700 12px var(--b);color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pin.me .tag{color:var(--on);background:var(--accent);border-color:var(--accent)}
+.pin.stale{opacity:.5;filter:grayscale(.8)}
+@media(prefers-reduced-motion:reduce){.man{animation:none}}
 </style>
+</head>
+<body>
 
-<main class="app">
-  <header class="brand">
-    <p class="pill">Comitiva Termotetti</p>
-    <h1 class="brand-name">TermonoNews</h1>
-    <svg class="crew" viewBox="0 0 360 150" role="img" aria-label="Cinque amici sorridenti, disegnati come cerchi colorati" xmlns="http://www.w3.org/2000/svg">
-      <g stroke="var(--bg)" stroke-width="5">
-        <g class="bob">
-          <circle cx="48" cy="92" r="42" fill="var(--c-pink)"/>
-          <circle cx="36" cy="86" r="4.5" fill="var(--face)" stroke="none"/>
-          <circle cx="58" cy="86" r="4.5" fill="var(--face)" stroke="none"/>
-          <path d="M33 102 q15 14 30 0" fill="none" stroke="var(--face)" stroke-width="4" stroke-linecap="round"/>
-        </g>
-        <g class="bob b2">
-          <circle cx="122" cy="68" r="48" fill="var(--c-yellow)"/>
-          <circle cx="108" cy="62" r="5" fill="var(--face)" stroke="none"/>
-          <circle cx="134" cy="62" r="5" fill="var(--face)" stroke="none"/>
-          <path d="M104 80 q18 18 36 0" fill="none" stroke="var(--face)" stroke-width="4.5" stroke-linecap="round"/>
-        </g>
-        <g class="bob b3">
-          <circle cx="198" cy="96" r="40" fill="var(--c-teal)"/>
-          <circle cx="187" cy="90" r="4.5" fill="var(--face)" stroke="none"/>
-          <circle cx="209" cy="90" r="4.5" fill="var(--face)" stroke="none"/>
-          <ellipse cx="198" cy="107" rx="9" ry="7" fill="var(--face)" stroke="none"/>
-        </g>
-        <g class="bob b4">
-          <circle cx="266" cy="64" r="46" fill="var(--accent)"/>
-          <circle cx="252" cy="58" r="5" fill="#FFFFFF" stroke="none"/>
-          <circle cx="278" cy="58" r="5" fill="#FFFFFF" stroke="none"/>
-          <path d="M250 76 q16 16 32 0" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
-        </g>
-        <g class="bob b5">
-          <circle cx="324" cy="98" r="34" fill="var(--c-orange)"/>
-          <circle cx="314" cy="93" r="4" fill="var(--face)" stroke="none"/>
-          <circle cx="334" cy="93" r="4" fill="var(--face)" stroke="none"/>
-          <path d="M313 106 q11 11 22 0" fill="none" stroke="var(--face)" stroke-width="4" stroke-linecap="round"/>
-        </g>
-      </g>
-    </svg>
-  </header>
-
-  <section class="sheet" id="authView" aria-labelledby="authTitle">
-    <h2 class="sr-only" id="authTitle">Accesso a TermonoNews</h2>
-
-    <div class="tabs" role="tablist" aria-label="Accedi o crea un account">
-      <button type="button" class="tab" role="tab" id="tabLogin" aria-selected="true" aria-controls="panelLogin">Accedi</button>
-      <button type="button" class="tab" role="tab" id="tabSignup" aria-selected="false" aria-controls="panelSignup" tabindex="-1">Crea account</button>
+<main class="app" id="authScreen">
+  <header><p class="pill">Comitiva Termotetti</p><h1>TermonoNews</h1></header>
+  <section class="sheet">
+    <p class="note" id="cfgNote" hidden>Mancano l’indirizzo o la chiave di Supabase in config.js, oppure le librerie non si sono caricate.</p>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab" id="tabLogin" role="tab" aria-selected="true">Accedi</button>
+      <button type="button" class="tab" id="tabSignup" role="tab" aria-selected="false">Crea account</button>
     </div>
-
-    <div role="tabpanel" id="panelLogin" aria-labelledby="tabLogin">
-      <p class="lead">Bentornato. Entra con il tuo account.</p>
-      <form id="loginForm" novalidate>
-        <div class="field">
-          <label for="user">Email o nome utente</label>
-          <div class="control">
-            <input id="user" name="username" type="text" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="nome@email.it" aria-describedby="userErr">
-          </div>
-          <p class="err" id="userErr" role="alert"></p>
-        </div>
-
-        <div class="field">
-          <label for="pw">Password</label>
-          <div class="control">
-            <input id="pw" name="password" type="password" class="has-toggle" autocomplete="current-password" placeholder="La tua password" aria-describedby="pwErr">
-            <button type="button" class="toggle" id="pwToggle" aria-controls="pw" aria-pressed="false">Mostra</button>
-          </div>
-          <p class="err" id="pwErr" role="alert"></p>
-        </div>
-
-        <div class="row">
-          <label class="check" for="remember">
-            <input id="remember" type="checkbox">
-            Ricordami
-          </label>
-          <button type="button" class="linkbtn" id="forgotBtn">Password dimenticata?</button>
-        </div>
-        <p class="note" id="forgotNote" hidden>Chiedi a chi ha creato il gruppo di reimpostarti la password.</p>
-
-        <button class="btn" type="submit" id="submitBtn"><span id="submitLabel">Entra</span></button>
-      </form>
-    </div>
-
-    <div role="tabpanel" id="panelSignup" aria-labelledby="tabSignup" hidden>
-      <p class="lead">Ti serve un minuto. Poi sei dentro.</p>
-      <form id="signupForm" novalidate>
-        <div class="field">
-          <label for="rName">Come ti chiami?</label>
-          <div class="control">
-            <input id="rName" name="name" type="text" autocomplete="name" autocapitalize="words" spellcheck="false" placeholder="Nome o soprannome" aria-describedby="rNameErr">
-          </div>
-          <p class="err" id="rNameErr" role="alert"></p>
-        </div>
-
-        <div class="field">
-          <label for="rEmail">Email</label>
-          <div class="control">
-            <input id="rEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="nome@email.it" aria-describedby="rEmailErr">
-          </div>
-          <p class="err" id="rEmailErr" role="alert"></p>
-        </div>
-
-        <div class="field">
-          <label for="rPw">Scegli una password</label>
-          <div class="control">
-            <input id="rPw" name="new-password" type="password" class="has-toggle" autocomplete="new-password" placeholder="Almeno 6 caratteri" aria-describedby="rPwErr">
-            <button type="button" class="toggle" id="rPwToggle" aria-controls="rPw" aria-pressed="false">Mostra</button>
-          </div>
-          <p class="err" id="rPwErr" role="alert"></p>
-        </div>
-
-        <button class="btn" type="submit" id="signupBtn"><span id="signupLabel">Crea account</span></button>
-      </form>
-    </div>
-
-    <div class="or">oppure</div>
-    <button class="btn ghost" type="button" id="guestBtn">Entra senza account</button>
+    <form id="loginForm" novalidate>
+      <div><label for="user">Email</label><input id="user" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="nome@email.it"></div>
+      <div><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" placeholder="La tua password"></div>
+      <p class="err" id="loginErr" role="alert"></p>
+      <button class="btn" type="submit" id="loginBtn">Entra</button>
+    </form>
+    <form id="signupForm" novalidate hidden>
+      <div><label for="rName">Nome o soprannome</label><input id="rName" type="text" maxlength="40" autocomplete="name" placeholder="Come ti chiamano gli amici"></div>
+      <div><label for="rEmail">Email</label><input id="rEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="nome@email.it"></div>
+      <div><label for="rPw">Password</label><input id="rPw" type="password" autocomplete="new-password" placeholder="Almeno 6 caratteri"></div>
+      <p class="err" id="signupErr" role="alert"></p>
+      <p class="note" id="signupNote" hidden></p>
+      <button class="btn" type="submit" id="signupBtn">Crea account</button>
+    </form>
   </section>
-
-  <section class="sheet" id="welcomeView" aria-labelledby="welcomeTitle" hidden>
-    <h2 id="welcomeTitle">Ciao</h2>
-    <p class="lead" id="welcomeLead">Bentornato nella comitiva.</p>
-    <p class="note">Questa è una versione di prova: gli account veri del gruppo si collegano nel prossimo passaggio.</p>
-    <p></p>
-    <button class="btn ghost" type="button" id="logoutBtn">Esci</button>
-  </section>
-
-  <p class="foot">TermonoNews · versione 0.1</p>
 </main>
 
+<main class="app" id="pendingScreen" hidden>
+  <header><p class="pill">Comitiva Termotetti</p><h1>TermonoNews</h1></header>
+  <section class="sheet">
+    <h2 id="pendTitle">Quasi fatto</h2>
+    <p class="lead" id="pendLead">L’account è pronto, ma deve approvarlo chi gestisce il gruppo. Appena succede, la mappa si apre da sola.</p>
+    <button class="btn" type="button" id="recheckBtn">Controlla ora</button>
+    <p></p>
+    <button class="btn ghost" type="button" id="pendOut">Esci</button>
+  </section>
+</main>
+
+<div class="home" id="homeScreen" hidden>
+  <div id="map"></div>
+  <div class="top">
+    <div class="logo"><b>TermonoNews</b><span id="hello"></span></div>
+    <button class="btn sm" type="button" id="fitBtn">Tutti</button>
+    <button class="btn sm" type="button" id="outBtn">Esci</button>
+  </div>
+  <div class="dock"><div class="card">
+    <button class="btn" type="button" id="shareBtn">Condividi la mia posizione</button>
+    <p class="status" id="status"></p>
+    <div class="chips" id="chips"></div>
+    <p class="foot" style="margin-top:8px">Mappa © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></p>
+  </div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
 <script>
-(function () {
-  function $(id) { return document.getElementById(id); }
+(() => {
+const $ = id => document.getElementById(id);
+const cfg = window.TERMONO_CONFIG || {};
+const ok = !!(cfg.url && cfg.key && window.supabase && window.L);
+const sb = ok ? supabase.createClient(cfg.url.replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, ''), cfg.key) : null;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store = (op, k, v) => { try { return op === 'get' ? localStorage.getItem(k) : op === 'set' ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) { return null; } };
+const screens = { auth: $('authScreen'), pending: $('pendingScreen'), home: $('homeScreen') };
+let current = '';
+function show(n) { current = n; for (const k in screens) screens[k].hidden = k !== n; if (n === 'home' && map) setTimeout(() => map.invalidateSize(), 0); else window.scrollTo(0, 0); }
 
-  var tabLogin = $('tabLogin'), tabSignup = $('tabSignup');
-  var panelLogin = $('panelLogin'), panelSignup = $('panelSignup');
-  var authView = $('authView'), welcomeView = $('welcomeView');
-  var welcomeTitle = $('welcomeTitle'), welcomeLead = $('welcomeLead');
-  var KEY = 'termononews:user';
+/* ---------- Accesso ---------- */
+const forms = { login: $('loginForm'), signup: $('signupForm') };
+function tab(w) {
+  $('tabLogin').setAttribute('aria-selected', w === 'login'); $('tabSignup').setAttribute('aria-selected', w === 'signup');
+  forms.login.hidden = w !== 'login'; forms.signup.hidden = w !== 'signup';
+}
+$('tabLogin').onclick = () => tab('login'); $('tabSignup').onclick = () => tab('signup');
+const saved = store('get', 'termononews:user'); if (saved) $('user').value = saved;
+function bad(input, out, msg) { out.textContent = msg; input.setAttribute('aria-invalid', 'true'); input.focus(); }
+function say(err) {
+  const m = (err && err.message || '').toLowerCase();
+  if (m.includes('invalid login')) return 'Email o password non corretti.';
+  if (m.includes('not confirmed')) return 'Prima conferma l’email: apri il link che ti abbiamo mandato.';
+  if (m.includes('already')) return 'Questa email è già registrata: prova ad accedere.';
+  if (m.includes('rate') || m.includes('seconds')) return 'Troppi tentativi: aspetta un minuto e riprova.';
+  return 'Qualcosa non ha funzionato. Riprova.';
+}
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+document.querySelectorAll('input').forEach(i => i.addEventListener('input', () => { i.removeAttribute('aria-invalid'); $('loginErr').textContent = $('signupErr').textContent = ''; }));
+async function busy(btn, text, fn) { const o = btn.textContent; btn.disabled = true; btn.textContent = text; try { await fn(); } finally { btn.disabled = false; btn.textContent = o; } }
 
-  function store(op, v) {
-    try {
-      if (op === 'get') return localStorage.getItem(KEY);
-      if (op === 'set') localStorage.setItem(KEY, v);
-      if (op === 'del') localStorage.removeItem(KEY);
-    } catch (e) {}
-    return null;
-  }
-
-  /* Schede */
-  function selectTab(which, moveFocus) {
-    var login = which === 'login';
-    tabLogin.setAttribute('aria-selected', login ? 'true' : 'false');
-    tabSignup.setAttribute('aria-selected', login ? 'false' : 'true');
-    tabLogin.tabIndex = login ? 0 : -1;
-    tabSignup.tabIndex = login ? -1 : 0;
-    panelLogin.hidden = !login;
-    panelSignup.hidden = login;
-    if (moveFocus) (login ? tabLogin : tabSignup).focus();
-  }
-  tabLogin.addEventListener('click', function () { selectTab('login'); });
-  tabSignup.addEventListener('click', function () { selectTab('signup'); });
-  [tabLogin, tabSignup].forEach(function (t) {
-    t.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        e.preventDefault();
-        selectTab(t === tabLogin ? 'signup' : 'login', true);
-      }
-    });
+forms.login.onsubmit = async e => {
+  e.preventDefault();
+  if (!ok) return $('cfgNote').hidden = false;
+  const u = $('user').value.trim(), p = $('pw').value;
+  if (!EMAIL.test(u)) return bad($('user'), $('loginErr'), 'Scrivi un’email valida.');
+  if (!p) return bad($('pw'), $('loginErr'), 'Inserisci la password.');
+  store('set', 'termononews:user', u);
+  await busy($('loginBtn'), 'Un attimo…', async () => {
+    const { error } = await sb.auth.signInWithPassword({ email: u, password: p });
+    if (error) $('loginErr').textContent = say(error);
   });
-
-  /* Utilità */
-  function setErr(input, out, msg) {
-    out.textContent = msg;
-    if (msg) input.setAttribute('aria-invalid', 'true');
-    else input.removeAttribute('aria-invalid');
-  }
-  function clearOnInput(input, out) {
-    input.addEventListener('input', function () { setErr(input, out, ''); });
-  }
-  function wireToggle(btn, input) {
-    btn.addEventListener('click', function () {
-      var show = input.type === 'password';
-      input.type = show ? 'text' : 'password';
-      btn.textContent = show ? 'Nascondi' : 'Mostra';
-      btn.setAttribute('aria-pressed', show ? 'true' : 'false');
-      input.focus();
-    });
-  }
-  function resetToggle(btn, input) {
-    input.type = 'password';
-    btn.textContent = 'Mostra';
-    btn.setAttribute('aria-pressed', 'false');
-  }
-  function startBusy(btn, labelEl, text) {
-    var orig = labelEl.textContent;
-    btn.disabled = true;
-    labelEl.textContent = text;
-    var sp = document.createElement('span');
-    sp.className = 'spinner';
-    sp.setAttribute('aria-hidden', 'true');
-    btn.insertBefore(sp, labelEl);
-    return function () {
-      btn.disabled = false;
-      labelEl.textContent = orig;
-      if (sp.parentNode) sp.parentNode.removeChild(sp);
-    };
-  }
-  function showWelcome(title, lead) {
-    welcomeTitle.textContent = title;
-    welcomeLead.textContent = lead;
-    authView.hidden = true;
-    welcomeView.hidden = false;
-    window.scrollTo(0, 0);
-  }
-
-  /* Accesso */
-  var user = $('user'), pw = $('pw'), userErr = $('userErr'), pwErr = $('pwErr');
-  var remember = $('remember'), pwToggle = $('pwToggle');
-  var forgotBtn = $('forgotBtn'), forgotNote = $('forgotNote');
-
-  var saved = store('get');
-  if (saved) { user.value = saved; remember.checked = true; }
-
-  wireToggle(pwToggle, pw);
-  clearOnInput(user, userErr);
-  clearOnInput(pw, pwErr);
-  forgotBtn.addEventListener('click', function () { forgotNote.hidden = !forgotNote.hidden; });
-
-  $('loginForm').addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    var u = user.value.trim();
-    var p = pw.value;
-    var firstBad = null;
-
-    if (!u) { setErr(user, userErr, 'Inserisci email o nome utente.'); firstBad = user; }
-    else setErr(user, userErr, '');
-
-    if (!p) { setErr(pw, pwErr, 'Inserisci la password.'); firstBad = firstBad || pw; }
-    else if (p.length < 6) { setErr(pw, pwErr, 'La password deve avere almeno 6 caratteri.'); firstBad = firstBad || pw; }
-    else setErr(pw, pwErr, '');
-
-    if (firstBad) { firstBad.focus(); return; }
-
-    if (remember.checked) store('set', u); else store('del');
-
-    var done = startBusy($('submitBtn'), $('submitLabel'), 'Un attimo…');
-    setTimeout(function () {
-      done();
-      showWelcome('Ciao, ' + u.split('@')[0] + '!', 'Bentornato nella comitiva.');
-    }, 700);
+};
+forms.signup.onsubmit = async e => {
+  e.preventDefault();
+  if (!ok) return $('cfgNote').hidden = false;
+  const n = $('rName').value.trim(), m = $('rEmail').value.trim(), p = $('rPw').value;
+  if (!n) return bad($('rName'), $('signupErr'), 'Scrivi il tuo nome o soprannome.');
+  if (!EMAIL.test(m)) return bad($('rEmail'), $('signupErr'), 'Scrivi un’email valida.');
+  if (p.length < 6) return bad($('rPw'), $('signupErr'), 'La password deve avere almeno 6 caratteri.');
+  await busy($('signupBtn'), 'Creo l’account…', async () => {
+    const { data, error } = await sb.auth.signUp({ email: m, password: p, options: { data: { name: n }, emailRedirectTo: location.origin + location.pathname } });
+    if (error) return $('signupErr').textContent = say(error);
+    if (data.user && data.user.identities && !data.user.identities.length) return $('signupErr').textContent = say({ message: 'already' });
+    if (!data.session) { $('signupNote').hidden = false; $('signupNote').textContent = 'Ti abbiamo mandato un’email: apri il link per confermare, poi accedi.'; }
   });
+};
+if (!ok) $('cfgNote').hidden = false;
 
-  /* Crea account */
-  var rName = $('rName'), rEmail = $('rEmail'), rPw = $('rPw');
-  var rNameErr = $('rNameErr'), rEmailErr = $('rEmailErr'), rPwErr = $('rPwErr');
-  var rPwToggle = $('rPwToggle');
+/* ---------- Instradamento ---------- */
+let session = null, routed = null, poll = null, myName = '';
+const uid = () => session && session.user.id;
+async function route() {
+  if (!session) { routed = null; clearInterval(poll); teardown(); return show('auth'); }
+  if (routed === uid() && current !== 'auth') return;
+  routed = uid(); await check();
+  clearInterval(poll); if (current === 'pending') poll = setInterval(check, 10000);
+}
+async function check() {
+  if (!session) return;
+  let r = await sb.from('profiles').select('name,approved').eq('id', uid()).maybeSingle();
+  if (!r.error && !r.data) { await new Promise(t => setTimeout(t, 1500)); r = await sb.from('profiles').select('name,approved').eq('id', uid()).maybeSingle(); }
+  if (r.error || !r.data) { $('pendTitle').textContent = 'Non riesco a collegarmi'; $('pendLead').textContent = 'Controlla la connessione e premi “Controlla ora”.'; return show('pending'); }
+  myName = r.data.name;
+  if (r.data.approved) { clearInterval(poll); if (current !== 'home') enterHome(); }
+  else { $('pendTitle').textContent = 'Quasi fatto, ' + myName; $('pendLead').textContent = 'L’account è pronto, ma deve approvarlo chi gestisce il gruppo. Appena succede, la mappa si apre da sola.'; show('pending'); }
+}
+$('recheckBtn').onclick = check;
+$('pendOut').onclick = $('outBtn').onclick = async () => { await stopShare(); await sb.auth.signOut(); };
+if (ok) sb.auth.onAuthStateChange((ev, s) => { if (ev === 'TOKEN_REFRESHED' || ev === 'USER_UPDATED') return; session = s; setTimeout(route, 0); });
 
-  wireToggle(rPwToggle, rPw);
-  clearOnInput(rName, rNameErr);
-  clearOnInput(rEmail, rEmailErr);
-  clearOnInput(rPw, rPwErr);
+/* ---------- Mappa e omini ---------- */
+let map, fitted = false, chan = null, tick = null, sync = null;
+const pins = new Map(), names = new Map();
+const PAL = [['#FF5C8A', '#1B1740'], ['#FFC93C', '#1B1740'], ['#2EC4B6', '#1B1740'], ['#5B3DF5', '#fff'], ['#FF8A3D', '#1B1740'], ['#7BD35B', '#1B1740'], ['#D96CFF', '#1B1740']];
+const pal = id => { let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0; return PAL[h % PAL.length]; };
+const STALE = 10 * 60e3, GONE = 12 * 3600e3;
+function ago(t) {
+  const s = (Date.now() - t) / 1000;
+  return s < 60 ? 'ora' : s < 3600 ? Math.round(s / 60) + ' min fa' : Math.round(s / 3600) + ' h fa';
+}
+function man(c, f) {
+  return `<svg class="man" viewBox="0 0 40 56" aria-hidden="true"><ellipse cx="20" cy="53.5" rx="10" ry="2.5" fill="#000" opacity=".18"/>
+<g stroke="#1B1740" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 39v11M25 39v11M12 27 5 36M28 27l7 9" fill="none"/>
+<rect x="11" y="22" width="18" height="19" rx="7" fill="${c}"/><circle cx="20" cy="12" r="10" fill="${c}"/></g>
+<circle cx="16.5" cy="11" r="1.9" fill="${f}"/><circle cx="23.5" cy="11" r="1.9" fill="${f}"/>
+<path d="M15.8 15.5q4.2 3.8 8.4 0" fill="none" stroke="${f}" stroke-width="2" stroke-linecap="round"/></svg>`;
+}
+const label = id => id === uid() ? 'Tu' : (names.get(id) || 'Amico');
+function icon(id, p) {
+  const [c, f] = pal(id);
+  return L.divIcon({ className: 'pinwrap', iconSize: [84, 78], iconAnchor: [42, 56],
+    html: `<div class="pin${id === uid() ? ' me' : ''}${Date.now() - p.t > STALE ? ' stale' : ''}" style="--x:0">${man(c, f).replace('class="man"', `class="man" style="animation-delay:-${(p.lat * 1e4 % 2.4).toFixed(2)}s"`)}<span class="tag">${esc(label(id))}</span></div>` });
+}
+function key(id, p) { return label(id) + (Date.now() - p.t > STALE); }
+function setPin(id, lat, lng, iso) {
+  const t = iso ? Date.parse(iso) : Date.now();
+  let p = pins.get(id);
+  if (!p) {
+    p = { lat, lng, t };
+    p.marker = L.marker([lat, lng], { icon: icon(id, p), zIndexOffset: id === uid() ? 1000 : 0, keyboard: false }).addTo(map);
+    p.key = key(id, p); pins.set(id, p);
+  } else {
+    p.t = t; glide(p, lat, lng); redraw(id);
+  }
+}
+function redraw(id) { const p = pins.get(id); if (p && p.key !== key(id, p)) { p.key = key(id, p); p.marker.setIcon(icon(id, p)); } }
+function glide(p, lat, lng) {
+  cancelAnimationFrame(p.raf);
+  const a = p.lat, b = p.lng, t0 = performance.now(); p.lat = lat; p.lng = lng;
+  if (a === lat && b === lng) return;
+  const step = now => {
+    const k = Math.min(1, (now - t0) / 900), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    p.marker.setLatLng([a + (lat - a) * e, b + (lng - b) * e]);
+    if (k < 1) p.raf = requestAnimationFrame(step);
+  };
+  p.raf = requestAnimationFrame(step);
+}
+function dropPin(id) { const p = pins.get(id); if (p) { cancelAnimationFrame(p.raf); map.removeLayer(p.marker); pins.delete(id); } }
+function fitAll() {
+  if (!pins.size) return;
+  const b = L.latLngBounds([...pins.values()].map(p => [p.lat, p.lng]));
+  map.fitBounds(b, { paddingTopLeft: [50, 100], paddingBottomRight: [50, 260], maxZoom: 16 });
+}
+$('fitBtn').onclick = fitAll;
+function chips() {
+  const box = $('chips'); box.innerHTML = '';
+  const list = [...pins].sort((a, b) => label(a[0]).localeCompare(label(b[0])));
+  if (!list.length) { const e = document.createElement('p'); e.className = 'empty'; e.textContent = 'Nessuno condivide la posizione, per ora.'; box.appendChild(e); }
+  for (const [id, p] of list) {
+    const b = document.createElement('button'), i = document.createElement('i'), n = document.createElement('span'), s = document.createElement('small');
+    b.className = 'chip'; b.type = 'button'; i.style.background = pal(id)[0];
+    n.textContent = label(id); s.textContent = ago(p.t);
+    b.append(i, n, s);
+    b.onclick = () => map.flyTo([p.lat, p.lng], Math.max(map.getZoom(), 16));
+    box.appendChild(b);
+  }
+}
+async function refresh() {
+  if (!sb || current !== 'home') return;
+  const [pr, po] = await Promise.all([sb.from('profiles').select('id,name'), sb.from('positions').select('user_id,lat,lng,updated_at')]);
+  if (pr.data) pr.data.forEach(r => names.set(r.id, r.name));
+  if (po.data) {
+    const seen = new Set(po.data.map(r => r.user_id));
+    po.data.forEach(r => setPin(r.user_id, r.lat, r.lng, r.updated_at));
+    [...pins.keys()].forEach(id => { if (!seen.has(id) && !(id === uid() && sharing)) dropPin(id); });
+  }
+  pins.forEach((p, id) => redraw(id));
+  chips();
+  if (!fitted && pins.size) { fitted = true; fitAll(); }
+}
+function enterHome() {
+  show('home');
+  $('hello').textContent = 'Ciao, ' + myName;
+  if (!map) {
+    map = L.map('map', { zoomControl: false, attributionControl: false, worldCopyJump: true }).setView([42.5, 12.5], 5);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+  }
+  map.invalidateSize(); refresh();
+  chan = sb.channel('termono')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'positions' }, e => {
+      if (e.eventType === 'DELETE') { dropPin(e.old.user_id); }
+      else if (names.has(e.new.user_id)) setPin(e.new.user_id, e.new.lat, e.new.lng, e.new.updated_at);
+      else return refresh();
+      chips();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, refresh)
+    .subscribe(s => { if (s === 'SUBSCRIBED') refresh(); });
+  tick = setInterval(() => { pins.forEach((p, id) => { if (Date.now() - p.t > GONE && id !== uid()) dropPin(id); else redraw(id); }); chips(); }, 30000);
+  sync = setInterval(refresh, 60000);
+  if (store('get', 'termononews:share') === '1') startShare();
+  else setShareUI();
+}
+function teardown() {
+  clearInterval(tick); clearInterval(sync);
+  if (chan) { sb.removeChannel(chan); chan = null; }
+  [...pins.keys()].forEach(dropPin); names.clear(); fitted = false;
+  if (watch !== null) { navigator.geolocation.clearWatch(watch); watch = null; } sharing = false;
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
 
-  $('signupForm').addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    var n = rName.value.trim();
-    var m = rEmail.value.trim();
-    var p = rPw.value;
-    var firstBad = null;
-
-    if (!n) { setErr(rName, rNameErr, 'Scrivi il tuo nome o soprannome.'); firstBad = rName; }
-    else setErr(rName, rNameErr, '');
-
-    if (!m) { setErr(rEmail, rEmailErr, 'Inserisci la tua email.'); firstBad = firstBad || rEmail; }
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)) { setErr(rEmail, rEmailErr, 'Controlla l\'email: sembra incompleta.'); firstBad = firstBad || rEmail; }
-    else setErr(rEmail, rEmailErr, '');
-
-    if (!p) { setErr(rPw, rPwErr, 'Scegli una password.'); firstBad = firstBad || rPw; }
-    else if (p.length < 6) { setErr(rPw, rPwErr, 'La password deve avere almeno 6 caratteri.'); firstBad = firstBad || rPw; }
-    else setErr(rPw, rPwErr, '');
-
-    if (firstBad) { firstBad.focus(); return; }
-
-    var done = startBusy($('signupBtn'), $('signupLabel'), 'Creo l\'account…');
-    setTimeout(function () {
-      done();
-      showWelcome('Benvenuto, ' + n + '!', 'Il tuo account è pronto.');
-    }, 800);
-  });
-
-  /* Accesso diretto */
-  $('guestBtn').addEventListener('click', function () {
-    showWelcome('Ciao, ospite!', 'Stai entrando senza account.');
-  });
-
-  /* Esci */
-  $('logoutBtn').addEventListener('click', function () {
-    pw.value = '';
-    rPw.value = '';
-    resetToggle(pwToggle, pw);
-    resetToggle(rPwToggle, rPw);
-    welcomeView.hidden = true;
-    authView.hidden = false;
-    selectTab('login');
-    (user.value ? pw : user).focus();
-  });
+/* ---------- Condivisione posizione ---------- */
+let sharing = false, watch = null, last = null;
+function setShareUI(msg) {
+  $('shareBtn').textContent = sharing ? 'Smetti di condividere' : 'Condividi la mia posizione';
+  $('shareBtn').className = 'btn' + (sharing ? ' off' : '');
+  $('status').textContent = msg || (sharing ? 'Stai condividendo. Tieni aperta questa pagina.' : 'Gli amici approvati non ti vedono sulla mappa.');
+}
+function startShare() {
+  if (!navigator.geolocation) return setShareUI('Questo browser non può leggere la posizione.');
+  sharing = true; last = null; store('set', 'termononews:share', '1'); setShareUI('Cerco il segnale GPS…');
+  watch = navigator.geolocation.watchPosition(onFix, onGeoErr, { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
+}
+async function stopShare() {
+  if (watch !== null) navigator.geolocation.clearWatch(watch);
+  watch = null; const was = sharing; sharing = false; store('set', 'termononews:share', '0');
+  if (map && uid()) { dropPin(uid()); chips(); setShareUI(); }
+  if (was && sb && session) await sb.from('positions').delete().eq('user_id', uid());
+}
+async function onFix(g) {
+  const lat = g.coords.latitude, lng = g.coords.longitude, now = Date.now();
+  setPin(uid(), lat, lng); chips();
+  const moved = last ? map.distance([last.lat, last.lng], [lat, lng]) : 1e9;
+  if (last && now - last.t < 5000) return;
+  if (last && moved < 8 && now - last.t < 30000) return;
+  last = { lat, lng, t: now };
+  const { error } = await sb.from('positions').upsert({ user_id: uid(), lat, lng, accuracy: Math.round(g.coords.accuracy) }, { onConflict: 'user_id' });
+  setShareUI(error ? 'Non riesco a salvare la posizione. Controlla di essere approvato.' : 'Stai condividendo (precisione ' + Math.round(g.coords.accuracy) + ' m). Tieni aperta questa pagina.');
+}
+function onGeoErr(e) {
+  if (e.code === 1) { stopShare(); setShareUI('Permesso negato: abilita la posizione per questo sito nelle impostazioni del browser.'); }
+  else setShareUI('Segnale GPS debole, continuo a cercare…');
+}
+$('shareBtn').onclick = () => sharing ? stopShare() : startShare();
 })();
 </script>
-
-</body></html>
+</body>
+</html>
