@@ -99,8 +99,25 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.stage.on img{transition:opacity .4s}.stage img.z{transform:none}}
 /* Profilo */
 .prof{text-align:center}
-.avatar{display:grid;place-items:center;width:96px;height:96px;margin:0 auto 8px;background:var(--field);border:1.5px solid var(--line);border-radius:50%}
-.avatar .man{width:48px;height:67px}
+.avatar{display:grid;place-items:center;width:104px;height:104px;margin:0 auto 10px;background:color-mix(in srgb,var(--pc,var(--accent)) 20%,var(--field));border:3px solid var(--pc,var(--accent));border-radius:50%}
+.avatar .man{width:52px;height:73px}
+.prof h2{font-size:1.5rem}
+.badge{display:inline-block;margin:0 0 4px;padding:4px 12px;font-size:.8125rem;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);border-radius:999px}
+.chead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.chead h2{margin:0 0 4px}
+.chead small{font-weight:700;color:var(--muted)}
+.gar .empty{padding:14px;text-align:center;border:1.5px dashed var(--line);border-radius:16px}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+.setrow+.setrow{border-top:1px solid var(--line)}
+.setrow div{min-width:0}
+.setrow b{display:block}
+.setrow small{display:block;font-size:.8125rem;color:var(--muted)}
+.switch{position:relative;flex:none;width:56px;height:44px;padding:0;background:none;border:0;cursor:pointer}
+.switch::before{content:"";position:absolute;left:0;top:6px;width:56px;height:32px;border-radius:999px;background:var(--line);transition:background .2s}
+.switch::after{content:"";position:absolute;left:4px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--muted);box-shadow:0 1px 4px rgba(0,0,0,.35);transition:transform .2s,background .2s}
+.switch[aria-checked=true]::before{background:var(--accent)}
+.switch[aria-checked=true]::after{transform:translateX(24px);background:var(--on)}
+@media(prefers-reduced-motion:reduce){.switch::before,.switch::after{transition:none}}
 .stats{display:flex;gap:8px;margin-top:12px}
 .stats div{flex:1;padding:10px;background:var(--field);border:1px solid var(--line);border-radius:14px}
 .stats b{display:block;font:700 1.25rem var(--d)}.stats span{font-size:.8125rem;color:var(--muted)}
@@ -116,6 +133,47 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .gv button{height:44px;min-width:44px;padding:0 12px;font-weight:700;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;cursor:pointer}
 .gv .usebtn.on{color:var(--on);background:var(--accent);border-color:var(--accent)}
 @media(prefers-reduced-motion:reduce){.bikeman{animation:none}}
+/* Raduno */
+.nb{position:relative}
+.nb .dot{position:absolute;top:8px;left:calc(50% + 6px);width:11px;height:11px;border-radius:50%;background:var(--danger);border:2px solid var(--surface)}
+.rtop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.rtop h2{margin:0}
+.rtop label{margin:0}
+.card .rt{margin:0 0 2px;font:700 1.25rem var(--d)}
+.rwhen{margin:0 0 8px;font-size:.9375rem;color:var(--muted)}
+.st{display:inline-block;margin:0 0 8px;padding:3px 10px;font-size:.8125rem;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);border-radius:999px}
+.st.go{color:var(--on);background:var(--accent)}
+.st.done{color:var(--muted);background:var(--field);border:1px solid var(--line)}
+.mem{display:flex;flex-direction:column;gap:6px;margin:8px 0 12px;padding:0;list-style:none}
+.mem li{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--field);border:1px solid var(--line);border-radius:14px}
+.mem i,.inv i{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--ink)}
+.mem b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mem small{max-width:50%;font-size:.8125rem;color:var(--muted);text-align:right}
+.mem .x{flex:none;width:44px;height:44px;padding:0;font-weight:700;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;cursor:pointer}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.acts .btn{flex:1 1 140px;height:48px;font-size:1rem}
+.btn.ghost.dng{color:var(--danger)}
+.rs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.rs>div{min-width:0;padding:10px;background:var(--field);border:1.5px solid var(--line);border-radius:14px}
+.rs b{display:block;font:800 1.25rem var(--d);overflow-wrap:anywhere}
+.rs span{font-size:.8125rem;color:var(--muted)}
+.rs .best{border-color:var(--accent)}
+.live{border:2px solid var(--accent)}
+.live .rs{margin:4px 0 12px}
+.live .note{margin:0 0 12px}
+.rsum{margin:8px 0;font-size:.9375rem}
+.rm{margin-top:12px}
+.rm h3{margin:0 0 6px;font:700 1rem var(--d)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two>div{min-width:0}
+.lab{display:block;margin-bottom:6px;font-weight:600;font-size:.9375rem}
+.inv{display:flex;flex-direction:column;gap:6px}
+.inv label{display:flex;align-items:center;gap:10px;min-height:48px;margin:0;padding:0 12px;background:var(--field);border:1.5px solid var(--line);border-radius:14px}
+.pickmap{height:300px;overflow:hidden;background:var(--field);border:1.5px solid var(--line);border-radius:16px}
+input[type=checkbox]{width:22px;height:22px;padding:0;accent-color:var(--accent)}
+input[type=range]{height:44px;padding:0;border:0;background:none;accent-color:var(--accent)}
+.radtip{padding:2px 8px;font:700 12px var(--b);color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;box-shadow:none}
+.radtip::before{display:none}
 /* Avviso vicinanza */
 .toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));z-index:4000;width:calc(100% - 24px);max-width:456px;padding:14px 16px;font-weight:700;color:var(--on);background:var(--accent);border-radius:18px;box-shadow:0 8px 28px rgba(40,20,120,.35);transform:translate(-50%,-200%);transition:transform .35s}
 .toast.show{transform:translate(-50%,0)}
@@ -201,8 +259,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     <section class="card prof">
       <div class="avatar" id="avatar"></div>
       <h2 id="profName"></h2>
-      <p class="lead" id="profMail"></p>
-      <div class="stats"><div><b id="stPhotos">–</b><span>foto caricate</span></div><div><b id="stSince">–</b><span>nel gruppo dal</span></div><div><b id="stVeh">–</b><span>mezzi</span></div></div>
+      <p class="lead" id="profMail" style="margin-bottom:8px"></p>
+      <span class="badge">Nella comitiva Termotetti</span>
+      <div class="stats"><div><b id="stPhotos">–</b><span>foto caricate</span></div><div><b id="stVeh">–</b><span>mezzi</span></div><div><b id="stSince">–</b><span>nel gruppo dal</span></div></div>
     </section>
     <section class="card">
       <h2>Il tuo nome</h2>
@@ -215,7 +274,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       </form>
     </section>
     <section class="card">
-      <h2>Il tuo garage</h2>
+      <div class="chead"><h2>Il tuo garage</h2><small id="garCount"></small></div>
       <p class="lead">Aggiungi i tuoi mezzi. Quando vai veloce compari sulla mappa come omino in moto, con il nome del mezzo.</p>
       <form id="garForm" novalidate>
         <div><label for="gName">Nome del mezzo</label><input id="gName" type="text" maxlength="30" autocomplete="off" placeholder="Es. Ducati Monster"></div>
@@ -224,11 +283,76 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       </form>
       <ul class="gar" id="garList"></ul>
     </section>
+    <section class="card">
+      <h2>Impostazioni</h2>
+      <div class="setrow">
+        <div><b>Condividi la posizione</b><small id="setShareTxt"></small></div>
+        <button type="button" class="switch" id="swShare" role="switch" aria-checked="false" aria-label="Condividi la posizione"></button>
+      </div>
+      <div class="setrow">
+        <div><b>Notifiche</b><small id="setNotifTxt"></small></div>
+        <button type="button" class="btn sm" id="notifBtn">Attiva</button>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Password</h2>
+      <p class="lead">Scegli una nuova password per questo account.</p>
+      <form id="pwForm" novalidate>
+        <div><label for="newPw">Nuova password</label><input id="newPw" type="password" autocomplete="new-password" placeholder="Almeno 6 caratteri"></div>
+        <p class="err" id="pwChgErr" role="alert"></p>
+        <p class="note" id="pwChgOk" hidden>Password aggiornata.</p>
+        <button class="btn" type="submit" id="pwChgBtn">Cambia password</button>
+      </form>
+    </section>
     <section class="card"><button class="btn ghost" type="button" id="profOut">Esci</button></section>
+  </div>
+  <div class="view" id="viewRaduno" hidden>
+    <section class="card live" id="tripLive" hidden>
+      <p class="st go">Conteggio in corso</p>
+      <h2 class="rt" id="tripTitle"></h2>
+      <p class="status" id="tLeft"></p>
+      <div class="rs">
+        <div><b id="tDist">–</b><span>distanza</span></div>
+        <div><b id="tTime">–</b><span>tempo</span></div>
+        <div><b id="tAvg">–</b><span>velocità media</span></div>
+        <div><b id="tMax">–</b><span>picco</span></div>
+      </div>
+      <div class="note" id="tWarn" hidden>La posizione non è condivisa: il conteggio è in pausa.<button class="btn sm" type="button" id="tResume" style="margin-top:8px">Riprendi condivisione</button></div>
+      <button class="btn ghost" type="button" id="tStop">Ho finito</button>
+    </section>
+    <div class="view" id="radListWrap">
+      <section class="card">
+        <div class="rtop"><h2>Raduno</h2><button class="btn sm" type="button" id="radNew">Nuovo raduno</button></div>
+        <p class="lead" style="margin:0">Scegli giorno, ora e luogo sulla mappa. Il raduno inizia quando tutti gli invitati sono dentro il cerchio. Distanza, tempo, velocità media e picco partono quando entri nel cerchio e si fermano quando il raduno finisce.</p>
+      </section>
+      <div class="view" id="radList"></div>
+    </div>
+    <form class="card" id="radForm" novalidate hidden>
+      <div class="rtop"><h2>Nuovo raduno</h2><button class="btn sm" type="button" id="radBack">Indietro</button></div>
+      <div><label for="rTitle">Nome del raduno</label><input id="rTitle" type="text" maxlength="50" autocomplete="off" placeholder="Es. Giro al lago"></div>
+      <div class="two">
+        <div><label for="rDate">Giorno</label><input id="rDate" type="date"></div>
+        <div><label for="rTime">Ora</label><input id="rTime" type="time"></div>
+      </div>
+      <div>
+        <div class="rtop"><span class="lab" style="margin:0">Chi inviti</span><button class="btn sm" type="button" id="invAll">Tutti</button></div>
+        <div class="inv" id="invList"></div>
+      </div>
+      <div>
+        <span class="lab">Dove ci vediamo</span>
+        <div class="pickmap" id="pickMap"></div>
+        <p class="status" id="pickHint">Tocca la mappa per mettere il cerchio.</p>
+        <button class="btn ghost" type="button" id="pickMe">Usa la mia posizione</button>
+      </div>
+      <div><label for="radius">Raggio del cerchio: <span id="radVal">100 m</span></label><input id="radius" type="range" min="30" max="1000" step="10" value="100"></div>
+      <p class="err" id="radErr" role="alert"></p>
+      <button class="btn" type="submit" id="radBtn">Crea raduno</button>
+    </form>
   </div>
   <nav class="nav" aria-label="Sezioni"><div class="bar">
     <button type="button" class="nb" id="navHome" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8M5 9.5V21h14V9.5M10 21v-6h4v6"/></svg>Home</button>
     <button type="button" class="nb" id="navPhoto" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="14" r="3.5"/></svg>Foto</button>
+    <button type="button" class="nb" id="navRaduno" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Raduno<span class="dot" id="radDot" hidden></span></button>
     <button type="button" class="nb" id="navProfile" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Profilo</button>
   </div></nav>
 </div>
@@ -404,6 +528,7 @@ async function refresh() {
   let [pr, po] = await Promise.all([sb.from('profiles').select('id,name'), sb.from('positions').select('user_id,lat,lng,updated_at,vehicle')]);
   if (po.error) po = await sb.from('positions').select('user_id,lat,lng,updated_at');
   if (pr.data) pr.data.forEach(r => names.set(r.id, r.name));
+  if (view === 'raduno' && rads.length) renderRad();
   if (po.data) {
     const seen = new Set(po.data.map(r => r.user_id));
     po.data.forEach(r => setPin(r.user_id, r.lat, r.lng, r.updated_at, r.vehicle));
@@ -421,7 +546,7 @@ function enterHome() {
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
     lock(true); map.on('click', () => { if (!full) setFull(true); });
   }
-  map.invalidateSize(); refresh(); setView('home'); loadPhotos(true); loadGarage();
+  map.invalidateSize(); refresh(); setView('home'); loadPhotos(true); loadGarage(); restoreTrip(); loadRaduni();
   chan = sb.channel('termono')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'positions' }, e => {
       if (e.eventType === 'DELETE') { dropPin(e.old.user_id); }
@@ -431,32 +556,35 @@ function enterHome() {
     })
     .on('broadcast', { event: 'approach' }, m => { const pl = m.payload || {}; if (pl.to === uid()) notifyApproach(names.get(pl.from) || pl.name || 'Un amico', pl.veh); })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, refresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'raduni' }, radSoon)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'raduno_members' }, radSoon)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'photos' }, e => loadPhotos(e.eventType === 'INSERT'))
     .subscribe(s => { if (s === 'SUBSCRIBED') refresh(); });
   tick = setInterval(() => { pins.forEach((p, id) => { if (Date.now() - p.t > GONE && id !== uid()) dropPin(id); else redraw(id); }); chips(); }, 30000);
-  sync = setInterval(() => { refresh(); loadPhotos(); }, 60000);
+  sync = setInterval(() => { refresh(); loadPhotos(); loadRaduni(); }, 60000);
   if (store('get', 'termononews:share') === '1') startShare();
   else setShareUI();
 }
 function teardown() {
-  clearInterval(tick); clearInterval(sync); podRun(false); photos = []; pIdx = -1; urls.clear();
+  clearInterval(tick); clearInterval(sync); radTeardown(); podRun(false); photos = []; pIdx = -1; urls.clear();
   if (chan) { sb.removeChannel(chan); chan = null; }
   [...pins.keys()].forEach(dropPin); names.clear(); fitted = false; centered = false; if (full) setFull(false);
   if (watch !== null) { navigator.geolocation.clearWatch(watch); watch = null; } sharing = false; prev = null; notified.clear(); garage = []; ride = false; kmh = 0; lastFix = null;
 }
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { refresh(); loadPhotos(); } podSync(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { refresh(); loadPhotos(); loadRaduni(); } podSync(); });
 
 /* ---------- Nav e foto del giorno ---------- */
 let view = 'home', photos = [], pIdx = -1, pTimer = null, podOn = false;
 const urls = new Map(), SHOW = 3000;
 function setView(v) {
-  view = v; $('viewHome').hidden = v !== 'home'; $('viewPhoto').hidden = v !== 'photo'; $('viewProfile').hidden = v !== 'profile';
-  $('navHome').setAttribute('aria-current', v === 'home'); $('navPhoto').setAttribute('aria-current', v === 'photo'); $('navProfile').setAttribute('aria-current', v === 'profile');
+  view = v; $('viewHome').hidden = v !== 'home'; $('viewPhoto').hidden = v !== 'photo'; $('viewProfile').hidden = v !== 'profile'; $('viewRaduno').hidden = v !== 'raduno';
+  $('navHome').setAttribute('aria-current', v === 'home'); $('navPhoto').setAttribute('aria-current', v === 'photo'); $('navProfile').setAttribute('aria-current', v === 'profile'); $('navRaduno').setAttribute('aria-current', v === 'raduno');
   if (v === 'profile') loadProfile();
+  if (v === 'raduno') { renderRad(); loadRaduni(); if (pickMap) setTimeout(() => pickMap.invalidateSize(), 50); }
   if (v === 'home' && map) map.invalidateSize();
   podSync(); window.scrollTo(0, 0);
 }
-$('navHome').onclick = () => setView('home'); $('navPhoto').onclick = () => setView('photo'); $('navProfile').onclick = () => setView('profile');
+$('navHome').onclick = () => setView('home'); $('navPhoto').onclick = () => setView('photo'); $('navProfile').onclick = () => setView('profile'); $('navRaduno').onclick = () => setView('raduno');
 const hhmm = iso => new Date(iso).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
 function podSync() { podRun(!document.hidden && current === 'home' && view === 'home'); }
 function podRun(on) {
@@ -553,11 +681,12 @@ $('file').onchange = async e => {
 /* ---------- Profilo ---------- */
 function drawProfile() {
   const [c, f] = pal(uid());
+  $('avatar').style.setProperty('--pc', c);
   $('avatar').innerHTML = man(c, f); $('profName').textContent = myName; $('profMail').textContent = session.user.email || '';
 }
 async function loadProfile() {
   if (!sb || !session) return;
-  loadGarage(); drawProfile(); $('pName').value = myName; $('nameErr').textContent = ''; $('nameOk').hidden = true;
+  setNotifUI(); syncShareSwitch(); loadGarage(); drawProfile(); $('pName').value = myName; $('nameErr').textContent = ''; $('nameOk').hidden = true;
   const [a, b] = await Promise.all([
     sb.from('profiles').select('created_at').eq('id', uid()).maybeSingle(),
     sb.from('photos').select('id', { count: 'exact', head: true }).eq('user_id', uid())
@@ -616,7 +745,7 @@ async function loadGarage() {
   garage = r.data || []; $('garErr').textContent = ''; drawGarage();
 }
 function drawGarage() {
-  const l = $('garList'), a = activeVeh(), [c, f] = pal(uid()); l.innerHTML = ''; $('stVeh').textContent = garage.length;
+  const l = $('garList'), a = activeVeh(), [c, f] = pal(uid()); l.innerHTML = ''; $('stVeh').textContent = garage.length; $('garCount').textContent = garage.length + ' / 6';
   for (const v of garage) {
     const li = document.createElement('li'), b = document.createElement('b'), u = document.createElement('button'), x = document.createElement('button'), on = !!a && a.id === v.id;
     li.className = 'gv' + (on ? ' use' : ''); li.innerHTML = rider(c, f); b.textContent = v.name;
@@ -625,6 +754,7 @@ function drawGarage() {
     x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Elimina ' + v.name); x.onclick = () => delVeh(v);
     li.append(b, u, x); l.appendChild(li);
   }
+  if (!garage.length) { const e = document.createElement('li'); e.className = 'empty'; e.textContent = 'Nessun mezzo, per ora. Aggiungine uno qui sopra.'; l.appendChild(e); }
 }
 async function delVeh(v) {
   if (!confirm('Togliere «' + v.name + '» dal garage?')) return;
@@ -650,10 +780,15 @@ function setShareUI(msg) {
   $('shareBtn').textContent = sharing ? 'Smetti di condividere' : 'Condividi la mia posizione';
   $('shareBtn').className = 'btn' + (sharing ? ' off' : '');
   $('status').textContent = msg || (sharing ? 'Stai condividendo. Tieni aperta questa pagina.' : 'Gli amici approvati non ti vedono sulla mappa.');
+  syncShareSwitch();
+}
+function syncShareSwitch() {
+  $('swShare').setAttribute('aria-checked', sharing ? 'true' : 'false');
+  $('setShareTxt').textContent = sharing ? 'Attiva: gli amici ti vedono sulla mappa.' : 'Spenta: nessuno ti vede sulla mappa.';
 }
 function startShare() {
   if (!navigator.geolocation) return setShareUI('Questo browser non può leggere la posizione.');
-  sharing = true; last = null; centered = false; store('set', 'termononews:share', '1'); setShareUI('Cerco il segnale GPS…');
+  sharing = true; last = null; if (trip) trip.last = null; centered = false; store('set', 'termononews:share', '1'); setShareUI('Cerco il segnale GPS…');
   watch = navigator.geolocation.watchPosition(onFix, onGeoErr, { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
 }
 async function stopShare() {
@@ -665,7 +800,7 @@ async function stopShare() {
 async function onFix(g) {
   const lat = g.coords.latitude, lng = g.coords.longitude, now = Date.now();
   lastFix = g; const flip = updateRide(g, now);
-  setPin(uid(), lat, lng, null, ride ? activeVeh().name : null); chips(); checkNear(lat, lng, g);
+  setPin(uid(), lat, lng, null, ride ? activeVeh().name : null); chips(); checkNear(lat, lng, g); radFix(g, now);
   if (!centered) { centered = true; map.setView([lat, lng], 15); }
   const moved = last ? map.distance([last.lat, last.lng], [lat, lng]) : 1e9;
   if (!flip && last && now - last.t < 5000) return;
@@ -715,6 +850,419 @@ function checkNear(lat, lng, g) {
 }
 function askNotif() { try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); } catch (e) {} }
 $('shareBtn').onclick = () => { if (sharing) stopShare(); else { askNotif(); startShare(); } };
+
+/* ---------- Impostazioni e password del profilo ---------- */
+$('swShare').onclick = () => $('shareBtn').click();
+function setNotifUI() {
+  const p = 'Notification' in window ? Notification.permission : 'unsupported';
+  $('notifBtn').hidden = p !== 'default';
+  $('setNotifTxt').textContent = p === 'granted' ? 'Attive: ti avviso quando un amico sta venendo da te.'
+    : p === 'denied' ? 'Bloccate: riattivale dalle impostazioni del browser.'
+    : p === 'default' ? 'Spente: attivale per sapere quando un amico si avvicina.'
+    : 'Non disponibili su questo browser.';
+}
+$('notifBtn').onclick = async () => { try { await Notification.requestPermission(); } catch (e) {} setNotifUI(); };
+$('newPw').addEventListener('input', () => { $('pwChgErr').textContent = ''; $('pwChgOk').hidden = true; });
+$('pwForm').onsubmit = async e => {
+  e.preventDefault(); $('pwChgOk').hidden = true;
+  const p = $('newPw').value;
+  if (p.length < 6) return bad($('newPw'), $('pwChgErr'), 'La password deve avere almeno 6 caratteri.');
+  await busy($('pwChgBtn'), 'Salvo…', async () => {
+    const { error } = await sb.auth.updateUser({ password: p });
+    if (error) return $('pwChgErr').textContent = /same|different/i.test(error.message || '') ? 'Scegli una password diversa da quella attuale.' : 'Non sono riuscito a cambiare la password. Riprova.';
+    $('newPw').value = ''; $('pwChgOk').hidden = false;
+  });
+};
+/* ---------- Raduno ---------- */
+const WIN_BEFORE = 3 * 3600e3, WIN_AFTER = 12 * 3600e3;   // il raduno è "in corso" da 3 h prima a 12 h dopo l'orario
+const radMems = new Map(), arriving = new Set();
+let rads = [], radMissing = '', radLoaded = false, radLayer = null, radT = null;
+let pickMap = null, pickCircle = null, pickPoint = null;
+let trip = null, tripT = null, closing = false;
+
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const jget = k => { try { const v = JSON.parse(store('get', k) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+const fmtWhen = iso => new Date(iso).toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + hhmm(iso);
+const fmtKm = m => ((m || 0) / 1000).toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' km';
+const fmtV = v => Math.round(v || 0) + ' km/h';
+const fmtT = s => { s = Math.max(0, Math.round(s || 0)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + ' h ' + pad(m) + ' min' : m ? m + ' min ' + pad(s % 60) + ' s' : s + ' s'; };
+const accentColor = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#5B3DF5';
+const radSoon = () => { clearTimeout(radT); radT = setTimeout(loadRaduni, 600); };
+
+function pushNote(msg) {
+  toast(msg);
+  try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {}
+  if (document.hidden && 'Notification' in window && Notification.permission === 'granted' && navigator.serviceWorker)
+    navigator.serviceWorker.ready.then(r => r.showNotification('TermonoNews', { body: msg, icon: 'icons/icon-192.png', tag: 'raduno', renotify: true })).catch(() => {});
+}
+
+/* Il raduno finisce quando l'organizzatore lo termina, o al più tardi 12 h dopo l'orario */
+const endOf = r => Math.min(r.ended_at ? Date.parse(r.ended_at) : Infinity, Date.parse(r.scheduled_at) + WIN_AFTER);
+
+/* Stato di un raduno: in programma, in corso, iniziato (tutti dentro il cerchio) o concluso */
+function radInfo(r) {
+  const ms = radMems.get(r.id) || [], now = Date.now(), t = Date.parse(r.scheduled_at);
+  const req = ms.filter(m => m.rsvp !== 'no'), done = req.filter(m => m.arrived_at);
+  const started = req.length >= 2 && done.length === req.length;
+  const startedAt = started ? Math.max(...done.map(m => Date.parse(m.arrived_at))) : 0;
+  const st = now >= endOf(r) ? 'expired' : started ? 'started' : now >= t - WIN_BEFORE ? 'open' : 'soon';
+  return { ms, req, done, started, startedAt, st, me: ms.find(m => m.user_id === uid()) };
+}
+
+async function loadRaduni() {
+  if (!sb || !session) return;
+  const [a, b] = await Promise.all([
+    sb.from('raduni').select('id,creator_id,title,scheduled_at,lat,lng,radius_m,ended_at').order('scheduled_at', { ascending: true }),
+    sb.from('raduno_members').select('raduno_id,user_id,rsvp,trip_started_at,arrived_at,finished_at,distance_m,max_kmh,avg_kmh,duration_s,vehicle')
+  ]);
+  radLoaded = true;
+  if (a.error || b.error) { radMissing = (a.error || b.error).message || 'errore'; rads = []; radMems.clear(); renderRad(); return; }
+  radMissing = ''; rads = a.data || []; radMems.clear();
+  (b.data || []).forEach(m => { if (!radMems.has(m.raduno_id)) radMems.set(m.raduno_id, []); radMems.get(m.raduno_id).push(m); });
+  checkRadEvents(); validateTrip(); drawRadMap(); renderRad(); tripUI();
+}
+
+function checkRadEvents() {
+  const kI = 'termononews:rinv:' + uid(), kS = 'termononews:rstart:' + uid(), seenI = jget(kI), seenS = jget(kS);
+  let pend = 0;
+  rads.forEach(r => {
+    const i = radInfo(r);
+    if (i.me && i.me.rsvp === 'pending' && i.st !== 'expired') {
+      pend++;
+      if (!seenI.includes(r.id)) { seenI.push(r.id); pushNote('Sei invitato al raduno «' + r.title + '»'); }
+    }
+    if (i.started && !seenS.includes(r.id)) {
+      seenS.push(r.id);
+      if (Date.now() - i.startedAt < 10 * 60e3) pushNote('Il raduno «' + r.title + '» è iniziato: siete arrivati tutti!');
+    }
+  });
+  store('set', kI, JSON.stringify(seenI.slice(-50))); store('set', kS, JSON.stringify(seenS.slice(-50)));
+  $('radDot').hidden = pend === 0;
+}
+
+/* ---- Dall'arrivo nel cerchio alla fine del raduno: distanza, tempo, velocità media e di picco ---- */
+const tripKey = () => 'termononews:trip:' + uid();
+function saveTrip() { if (trip) store('set', tripKey(), JSON.stringify({ rid: trip.rid, t0: trip.t0, dist: trip.dist, max: trip.max })); else store('del', tripKey()); }
+function restoreTrip() {
+  if (trip) return;
+  try { const j = JSON.parse(store('get', tripKey()) || 'null'); if (j && j.rid) trip = { rid: j.rid, t0: j.t0, dist: j.dist || 0, max: j.max || 0, sv: 0, last: null, sent: 0 }; } catch (e) {}
+}
+function newTrip(rid, t0, dist, max) { trip = { rid, t0, dist: dist || 0, max: max || 0, sv: 0, last: null, sent: Date.now() }; saveTrip(); }
+function validateTrip() {
+  if (trip) {
+    const r = rads.find(x => x.id === trip.rid), me = r && radInfo(r).me;
+    if (!me || me.rsvp !== 'yes' || !me.arrived_at || me.finished_at) { trip = null; saveTrip(); }
+    else if (Date.now() >= endOf(r)) finishTrip(endOf(r));
+  }
+  if (trip) return;
+  // pagina riaperta o altro telefono: riprendo il conteggio dai dati salvati
+  for (const r of rads) {
+    const me = radInfo(r).me;
+    if (me && me.rsvp === 'yes' && me.arrived_at && !me.finished_at && Date.now() < endOf(r)) {
+      newTrip(r.id, Date.parse(me.arrived_at), me.distance_m, me.max_kmh);
+      break;
+    }
+  }
+}
+function tripStats(now) {
+  const sec = Math.max(1, (now - trip.t0) / 1000), v = activeVeh();
+  return {
+    trip_started_at: new Date(trip.t0).toISOString(),
+    distance_m: Math.round(trip.dist),
+    max_kmh: Math.round(trip.max * 10) / 10,
+    avg_kmh: Math.round(trip.dist / sec * 3.6 * 10) / 10,   // distanza / tempo totale, fermate comprese
+    duration_s: Math.round(sec),
+    ...(v ? { vehicle: v.name } : {})
+  };
+}
+function pushTrip() {
+  if (!trip || closing) return;
+  sb.from('raduno_members').update({ ...tripStats(Date.now()), updated_at: new Date().toISOString() })
+    .eq('raduno_id', trip.rid).eq('user_id', uid()).is('finished_at', null).then(() => {}, () => {});
+}
+/* Ferma il conteggio e salva i dati definitivi. Se il salvataggio fallisce, riprova più tardi. */
+async function finishTrip(at) {
+  if (!trip || closing) return;
+  closing = true;
+  const t = trip;
+  const row = { ...tripStats(at), finished_at: new Date(at).toISOString(), updated_at: new Date().toISOString() };
+  const { error } = await sb.from('raduno_members').update(row).eq('raduno_id', t.rid).eq('user_id', uid());
+  closing = false;
+  if (error) return toast('Non sono riuscito a salvare i dati del raduno. Riprovo tra poco.');
+  if (trip === t) { trip = null; saveTrip(); }
+  tripUI(); loadRaduni();
+}
+
+/* Chiamata a ogni posizione GPS: aggiorna il conteggio e controlla se sono entrato nel cerchio */
+function radFix(g, now) {
+  if (!rads.length) return;
+  const lat = g.coords.latitude, lng = g.coords.longitude, acc = g.coords.accuracy;
+  const cur = trip && rads.find(x => x.id === trip.rid);
+  if (cur && now >= endOf(cur)) finishTrip(endOf(cur));
+  else if (trip && !closing) {
+    if (acc <= 30) {
+      const p = trip.last;
+      if (p) {
+        const dt = (now - p.t) / 1000, d = map.distance([p.lat, p.lng], [lat, lng]);
+        if (dt > 0.5) {
+          let v = g.coords.speed; if (v == null || isNaN(v)) v = d / dt;
+          if (d / dt < 85 && v < 85) {                       // scarta i salti impossibili del GPS (oltre ~300 km/h)
+            if (d >= 4) trip.dist += d;                      // sotto i 4 m è rumore del GPS da fermo
+            trip.sv = trip.sv * .5 + v * 3.6 * .5;           // velocità addolcita per non registrare picchi finti
+            if (trip.sv > trip.max) trip.max = trip.sv;
+          }
+        }
+      }
+      trip.last = { lat, lng, t: now };
+      saveTrip();
+    }
+    if (now - trip.sent > 15000) { trip.sent = now; pushTrip(); }
+  }
+  rads.forEach(r => {
+    const i = radInfo(r);
+    if (!i.me || i.me.rsvp !== 'yes' || i.me.arrived_at || arriving.has(r.id)) return;
+    if (i.st !== 'open' && i.st !== 'started') return;
+    if (acc > Math.max(40, r.radius_m)) return;
+    if (map.distance([lat, lng], [r.lat, r.lng]) <= r.radius_m) arrive(r, now, lat, lng);
+  });
+}
+async function arrive(r, now, lat, lng) {
+  arriving.add(r.id);
+  const at = new Date(now).toISOString();
+  const row = { arrived_at: at, trip_started_at: at, finished_at: null, distance_m: 0, max_kmh: 0, avg_kmh: 0, duration_s: 0, updated_at: new Date().toISOString() };
+  const v = activeVeh(); if (v) row.vehicle = v.name;
+  const { error } = await sb.from('raduno_members').update(row).eq('raduno_id', r.id).eq('user_id', uid());
+  arriving.delete(r.id);
+  if (error) return;
+  if (!trip) { newTrip(r.id, now); trip.last = { lat, lng, t: now }; }
+  toast('Sei arrivato al raduno «' + r.title + '»: parte il conteggio.');
+  loadRaduni();
+}
+function tripUI() {
+  clearInterval(tripT); tripT = null;
+  const box = $('tripLive'), r = trip && rads.find(x => x.id === trip.rid);
+  if (!r) { box.hidden = true; return; }
+  box.hidden = false; $('tripTitle').textContent = '«' + r.title + '»';
+  const paint = () => {
+    if (!trip) return tripUI();
+    if (Date.now() >= endOf(r)) finishTrip(endOf(r));
+    const s = tripStats(Math.min(Date.now(), endOf(r)));
+    $('tDist').textContent = fmtKm(s.distance_m); $('tTime').textContent = fmtT(s.duration_s);
+    $('tAvg').textContent = fmtV(s.avg_kmh); $('tMax').textContent = fmtV(s.max_kmh);
+    $('tLeft').textContent = 'Tieni aperta questa pagina fino alla fine del raduno.';
+    $('tWarn').hidden = sharing;
+  };
+  paint(); if (trip) tripT = setInterval(paint, 1000);
+}
+
+/* ---- Elenco raduni ---- */
+function memStatus(m) {
+  return m.rsvp === 'no' ? 'Non viene' : m.arrived_at ? 'Arrivato alle ' + hhmm(m.arrived_at) + ' · ' + fmtKm(m.distance_m)
+    : m.rsvp === 'pending' ? 'In attesa' : 'Ci sarà';
+}
+function resBlock(i) {
+  const wrap = el('div'), here = i.req.filter(m => m.arrived_at), ws = here.filter(m => m.trip_started_at);
+  const best = k => ws.reduce((a, m) => Math.max(a, m[k] || 0), 0), bD = best('distance_m'), bA = best('avg_kmh'), bM = best('max_kmh');
+  const total = ws.reduce((a, m) => a + (m.distance_m || 0), 0), multi = ws.length > 1;
+  wrap.append(el('p', 'rsum', ws.length ? 'Insieme avete percorso ' + fmtKm(total) + '. Picco del gruppo: ' + fmtV(bM) + '.' : 'Nessun dato registrato.'));
+  here.slice().sort((a, b) => Date.parse(a.arrived_at) - Date.parse(b.arrived_at)).forEach((m, n) => {
+    const b = el('div', 'rm');
+    b.append(el('h3', '', (n + 1) + '. ' + label(m.user_id) + (m.vehicle ? ' · ' + m.vehicle : '') + ' · ' + hhmm(m.arrived_at)));
+    if (!m.trip_started_at) b.append(el('p', 'status', 'Nessun dato registrato.'));
+    else {
+      const g = el('div', 'rs');
+      const cell = (lab, val, isBest) => { const d = el('div', isBest ? 'best' : ''); d.append(el('b', '', val), el('span', '', lab)); g.append(d); };
+      cell('distanza', fmtKm(m.distance_m), multi && m.distance_m === bD && bD > 0);
+      cell('tempo', fmtT(m.duration_s), false);
+      cell('velocità media', fmtV(m.avg_kmh), multi && m.avg_kmh === bA && bA > 0);
+      cell('picco', fmtV(m.max_kmh), multi && m.max_kmh === bM && bM > 0);
+      b.append(g);
+    }
+    wrap.append(b);
+  });
+  if (multi) wrap.append(el('p', 'status', 'Il bordo evidenziato segna il miglior valore del gruppo.'));
+  return wrap;
+}
+function radCard(r, i) {
+  const c = el('section', 'card'), me = i.me, mine = r.creator_id === uid();
+  const stTxt = i.st === 'started' ? 'Raduno iniziato' : i.st === 'expired' ? 'Concluso' : i.st === 'open' ? 'In corso · arrivati ' + i.done.length + ' su ' + i.req.length : 'In programma';
+  c.append(el('p', 'st ' + (i.st === 'open' ? 'go' : i.st === 'soon' ? '' : 'done'), stTxt));
+  c.append(el('h2', 'rt', r.title));
+  c.append(el('p', 'rwhen', fmtWhen(r.scheduled_at) + ' · cerchio da ' + r.radius_m + ' m'));
+  if (i.started || (i.st === 'expired' && i.done.length)) {
+    if (i.started) c.append(el('p', 'rsum', 'Siete arrivati tutti alle ' + hhmm(i.startedAt) + ': il raduno è iniziato.'));
+    c.append(resBlock(i));
+  } else {
+    const ul = el('ul', 'mem');
+    i.ms.slice().sort((a, b) => (b.user_id === r.creator_id) - (a.user_id === r.creator_id) || label(a.user_id).localeCompare(label(b.user_id))).forEach(m => {
+      const li = el('li'), dot = el('i');
+      dot.style.background = pal(m.user_id)[0];
+      li.append(dot, el('b', '', label(m.user_id) + (m.user_id === r.creator_id ? ' · organizza' : '')), el('small', '', memStatus(m)));
+      if (mine && m.user_id !== uid() && i.st !== 'expired') {
+        const x = el('button', 'x', '×'); x.type = 'button'; x.setAttribute('aria-label', 'Togli ' + label(m.user_id)); x.onclick = () => removeMember(r, m); li.append(x);
+      }
+      ul.append(li);
+    });
+    c.append(ul);
+    const miss = i.req.filter(m => !m.arrived_at).map(m => label(m.user_id));
+    if (i.st === 'open' && miss.length) c.append(el('p', 'status', 'Mancano: ' + miss.join(', ') + '.'));
+  }
+  const acts = el('div', 'acts');
+  const add = (txt, cls, fn) => { const b = el('button', 'btn ' + cls, txt); b.type = 'button'; b.onclick = fn; acts.append(b); };
+  if (me && me.rsvp === 'pending' && i.st !== 'expired') { add('Ci sono', '', () => setRsvp(r, 'yes')); add('Non vengo', 'ghost', () => setRsvp(r, 'no')); }
+  if (me && me.rsvp === 'no' && (i.st === 'soon' || i.st === 'open')) add('Ci sono comunque', 'ghost', () => setRsvp(r, 'yes'));
+  if (me && me.rsvp === 'yes' && !me.arrived_at && (i.st === 'soon' || i.st === 'open')) {
+    c.append(el('p', 'status', sharing ? 'Il conteggio parte quando entri nel cerchio.' : 'Condividi la posizione: il conteggio parte quando entri nel cerchio.'));
+    if (!sharing) add('Condividi posizione', '', () => { askNotif(); startShare(); renderRad(); });
+  }
+  if (i.st !== 'expired') add('Vedi sulla mappa', 'ghost', () => goMap(r));
+  if (mine && i.st !== 'expired' && i.done.length) add('Termina raduno', '', () => endRad(r));
+  if (mine) add('Elimina', 'ghost dng', () => delRad(r));
+  else if (me && me.rsvp === 'yes' && !me.arrived_at && !i.started && i.st !== 'expired') add('Non vengo più', 'ghost', () => setRsvp(r, 'no'));
+  if (acts.children.length) c.append(acts);
+  return c;
+}
+function renderRad() {
+  const box = $('radList'); box.innerHTML = '';
+  const note = (cls, txt) => { const c = el('section', 'card'); c.append(el('p', cls, txt)); box.append(c); };
+  if (!radLoaded) return note('empty', 'Carico i raduni…');
+  if (radMissing) return note('note', 'Il Raduno non è ancora attivo: mancano le tabelle o i permessi nel database (' + radMissing + ').');
+  const now = Date.now(), order = { open: 0, soon: 1, started: 2, expired: 3 };
+  const list = rads.map(r => ({ r, i: radInfo(r) }))
+    .filter(x => !(x.i.st === 'expired' && !x.i.done.length && now - Date.parse(x.r.scheduled_at) > 7 * 864e5))
+    .sort((a, b) => order[a.i.st] - order[b.i.st] || (a.i.st === 'started' || a.i.st === 'expired'
+      ? Date.parse(b.r.scheduled_at) - Date.parse(a.r.scheduled_at) : Date.parse(a.r.scheduled_at) - Date.parse(b.r.scheduled_at)));
+  if (!list.length) return note('empty', 'Nessun raduno, per ora. Tocca “Nuovo raduno” per organizzarne uno.');
+  list.forEach(x => box.append(radCard(x.r, x.i)));
+}
+async function setRsvp(r, v) {
+  const { error } = await sb.from('raduno_members').update({ rsvp: v, updated_at: new Date().toISOString() }).eq('raduno_id', r.id).eq('user_id', uid());
+  if (error) return toast('Non sono riuscito a salvare la risposta. Riprova.');
+  if (v === 'no' && trip && trip.rid === r.id) { trip = null; saveTrip(); }
+  loadRaduni();
+}
+async function removeMember(r, m) {
+  if (!confirm('Togliere ' + label(m.user_id) + ' dal raduno?')) return;
+  const { error } = await sb.from('raduno_members').delete().eq('raduno_id', r.id).eq('user_id', m.user_id);
+  if (error) return toast('Non sono riuscito a togliere l’invitato.');
+  loadRaduni();
+}
+async function endRad(r) {
+  if (!confirm('Terminare il raduno «' + r.title + '» per tutti? Il conteggio si ferma.')) return;
+  const { error } = await sb.from('raduni').update({ ended_at: new Date().toISOString() }).eq('id', r.id);
+  if (error) return toast('Non sono riuscito a terminare il raduno.');
+  loadRaduni();
+}
+async function delRad(r) {
+  if (!confirm('Eliminare il raduno «' + r.title + '»?')) return;
+  const { error } = await sb.from('raduni').delete().eq('id', r.id);
+  if (error) return toast('Non sono riuscito a eliminare il raduno.');
+  if (trip && trip.rid === r.id) { trip = null; saveTrip(); }
+  loadRaduni();
+}
+function goMap(r) {
+  setView('home'); map.invalidateSize(); setFull(true);
+  map.fitBounds(L.latLng(r.lat, r.lng).toBounds(r.radius_m * 2.6), { animate: false });
+}
+function drawRadMap() {
+  if (!map) return;
+  if (!radLayer) radLayer = L.layerGroup().addTo(map);
+  radLayer.clearLayers();
+  rads.forEach(r => {
+    const i = radInfo(r);
+    if (!i.me || i.me.rsvp === 'no' || i.st === 'expired' || i.st === 'started') return;
+    L.circle([r.lat, r.lng], { radius: r.radius_m, color: accentColor(), weight: 3, dashArray: '6 8', fillOpacity: .12, interactive: false })
+      .bindTooltip(esc(r.title), { permanent: true, direction: 'center', className: 'radtip' }).addTo(radLayer);
+  });
+}
+function radTeardown() {
+  clearInterval(tripT); tripT = null; trip = null; closing = false; rads = []; radMems.clear(); radMissing = ''; radLoaded = false;
+  if (radLayer) radLayer.clearLayers();
+  $('radList').innerHTML = ''; $('tripLive').hidden = true; $('radDot').hidden = true;
+}
+
+/* ---- Nuovo raduno ---- */
+async function loadInvitees() {
+  const box = $('invList'); box.innerHTML = '';
+  let r = await sb.from('profiles').select('id,name,approved');
+  if (r.error) r = await sb.from('profiles').select('id,name');
+  const list = (r.data || []).filter(p => p.id !== uid() && p.approved !== false);
+  if (!list.length) { box.append(el('p', 'empty', 'Non ci sono altri amici approvati, per ora.')); return; }
+  list.sort((a, b) => (a.name || '').localeCompare(b.name || '')).forEach(p => {
+    names.set(p.id, p.name || 'Amico');
+    const lb = el('label'), cb = document.createElement('input'), dot = el('i');
+    cb.type = 'checkbox'; cb.value = p.id; dot.style.background = pal(p.id)[0];
+    lb.append(cb, dot, el('span', '', p.name || 'Amico')); box.append(lb);
+  });
+}
+function initPick() {
+  if (!pickMap) {
+    pickMap = L.map('pickMap', { attributionControl: false }).setView([42.5, 12.5], 5);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(pickMap);
+    pickMap.on('click', e => setPick(e.latlng));
+  }
+  setTimeout(() => {
+    pickMap.invalidateSize();
+    const me = pins.get(uid());
+    if (me) pickMap.setView([me.lat, me.lng], 15);
+    else if (map) pickMap.setView(map.getCenter(), Math.max(map.getZoom(), 12));
+  }, 50);
+}
+function setPick(ll) {
+  pickPoint = { lat: ll.lat, lng: ll.lng };
+  const rad = +$('radius').value;
+  if (!pickCircle) pickCircle = L.circle(ll, { radius: rad, color: accentColor(), weight: 3, fillOpacity: .18 }).addTo(pickMap);
+  else { pickCircle.setLatLng(ll); pickCircle.setRadius(rad); }
+  $('pickHint').textContent = 'Luogo scelto. Tocca un altro punto per spostare il cerchio.';
+}
+function openForm() {
+  const n = new Date(Date.now() + 3600e3);
+  $('rTitle').value = ''; $('rDate').min = ymd(new Date()); $('rDate').value = ymd(n); $('rTime').value = pad(n.getHours()) + ':00';
+  $('radius').value = 100; $('radVal').textContent = '100 m'; $('radErr').textContent = '';
+  $('pickHint').textContent = 'Tocca la mappa per mettere il cerchio.';
+  pickPoint = null; if (pickCircle && pickMap) pickMap.removeLayer(pickCircle); pickCircle = null;
+  loadInvitees(); initPick();
+}
+function showRadForm(on) {
+  $('radListWrap').hidden = on; $('radForm').hidden = !on;
+  if (on) openForm();
+  window.scrollTo(0, 0);
+}
+$('radNew').onclick = () => showRadForm(true);
+$('radBack').onclick = () => showRadForm(false);
+$('invAll').onclick = () => { const c = [...document.querySelectorAll('#invList input')]; const all = c.every(x => x.checked); c.forEach(x => { x.checked = !all; }); };
+$('radius').oninput = () => { const v = +$('radius').value; $('radVal').textContent = v + ' m'; if (pickCircle) pickCircle.setRadius(v); };
+$('pickMe').onclick = () => {
+  if (!navigator.geolocation) { $('pickHint').textContent = 'Questo browser non può leggere la posizione.'; return; }
+  $('pickHint').textContent = 'Cerco la tua posizione…';
+  navigator.geolocation.getCurrentPosition(p => {
+    const ll = L.latLng(p.coords.latitude, p.coords.longitude); setPick(ll); pickMap.setView(ll, 16);
+  }, () => { $('pickHint').textContent = 'Non riesco a leggere la posizione: tocca la mappa.'; }, { enableHighAccuracy: true, timeout: 15000 });
+};
+$('radForm').onsubmit = async e => {
+  e.preventDefault();
+  const title = $('rTitle').value.trim() || 'Raduno', d = $('rDate').value, t = $('rTime').value, err = $('radErr');
+  const picked = [...document.querySelectorAll('#invList input:checked')].map(x => x.value);
+  err.textContent = '';
+  const when = new Date(d + 'T' + t);
+  if (!d || !t || isNaN(when)) return bad($('rDate'), err, 'Scegli giorno e ora.');
+  if (when.getTime() < Date.now() - 5 * 60e3) return bad($('rDate'), err, 'Scegli un giorno e un’ora che non siano già passati.');
+  if (!picked.length) return void (err.textContent = 'Invita almeno un amico.');
+  if (!pickPoint) return void (err.textContent = 'Tocca la mappa per scegliere il luogo del raduno.');
+  await busy($('radBtn'), 'Creo il raduno…', async () => {
+    const ins = await sb.from('raduni').insert({ creator_id: uid(), title, scheduled_at: when.toISOString(), lat: pickPoint.lat, lng: pickPoint.lng, radius_m: +$('radius').value }).select('id').maybeSingle();
+    if (ins.error || !ins.data) return void (err.textContent = 'Non sono riuscito a creare il raduno' + (ins.error ? ' (' + ins.error.message + ')' : '') + '.');
+    const rows = [{ raduno_id: ins.data.id, user_id: uid(), rsvp: 'yes' }, ...picked.map(id => ({ raduno_id: ins.data.id, user_id: id, rsvp: 'pending' }))];
+    const m = await sb.from('raduno_members').insert(rows);
+    if (m.error) { await sb.from('raduni').delete().eq('id', ins.data.id); return void (err.textContent = 'Non sono riuscito a invitare gli amici (' + m.error.message + ').'); }
+    showRadForm(false); await loadRaduni();
+  });
+};
+$('tStop').onclick = () => { if (confirm('Fermare il tuo conteggio? I dati raccolti restano salvati.')) finishTrip(Date.now()); };
+$('tResume').onclick = () => { if (!sharing) { askNotif(); startShare(); } };
+
 })();
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
