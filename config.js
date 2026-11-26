@@ -1,6 +1,6 @@
-// Incolla qui i due valori del tuo progetto Supabase (vedi LEGGIMI.txt).
-// Se restano vuoti l'app parte in modalità prova.
+// Valori del progetto Supabase di TermonoNews.
+// La chiave "publishable" puo' stare nel sito: e' fatta per questo. MAI la chiave "secret".
 window.TERMONO_CONFIG = {
-  url: "",   // es. https://abcdefgh.supabase.co
-  key: ""    // chiave "publishable" (sb_publishable_...). MAI la chiave "secret".
+  url: "https://gcqovdjjhebgotmmusqn.supabase.co",
+  key: "sb_publishable_cvLKbogR5R_Sxq8MdUYG6A_GRW946XM"
 };
