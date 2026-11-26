@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TermonoNews</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#5B3DF5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TermonoNews">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
@@ -89,6 +97,13 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .th span{position:absolute;left:4px;bottom:4px;max-width:calc(100% - 8px);padding:1px 7px;font-size:.6875rem;font-weight:700;background:var(--surface);border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .th button{position:absolute;top:4px;right:4px;width:28px;height:28px;padding:0;font-weight:700;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:50%;cursor:pointer}
 @media(prefers-reduced-motion:reduce){.stage.on img{transition:opacity .4s}.stage img.z{transform:none}}
+/* Profilo */
+.prof{text-align:center}
+.avatar{display:grid;place-items:center;width:96px;height:96px;margin:0 auto 8px;background:var(--field);border:1.5px solid var(--line);border-radius:50%}
+.avatar .man{width:48px;height:67px}
+.stats{display:flex;gap:8px;margin-top:12px}
+.stats div{flex:1;padding:10px;background:var(--field);border:1px solid var(--line);border-radius:14px}
+.stats b{display:block;font:700 1.25rem var(--d)}.stats span{font-size:.8125rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -166,9 +181,29 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       <div class="grid" id="grid"></div>
     </section>
   </div>
+  <div class="view" id="viewProfile" hidden>
+    <section class="card prof">
+      <div class="avatar" id="avatar"></div>
+      <h2 id="profName"></h2>
+      <p class="lead" id="profMail"></p>
+      <div class="stats"><div><b id="stPhotos">–</b><span>foto caricate</span></div><div><b id="stSince">–</b><span>nel gruppo dal</span></div></div>
+    </section>
+    <section class="card">
+      <h2>Il tuo nome</h2>
+      <p class="lead">È quello che vedono gli amici sulla mappa e nelle foto.</p>
+      <form id="nameForm" novalidate>
+        <div><label for="pName">Nome o soprannome</label><input id="pName" type="text" maxlength="40" autocomplete="nickname"></div>
+        <p class="err" id="nameErr" role="alert"></p>
+        <p class="note" id="nameOk" hidden>Nome aggiornato.</p>
+        <button class="btn" type="submit" id="nameBtn">Salva</button>
+      </form>
+    </section>
+    <section class="card"><button class="btn ghost" type="button" id="profOut">Esci</button></section>
+  </div>
   <nav class="nav" aria-label="Sezioni"><div class="bar">
     <button type="button" class="nb" id="navHome" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8M5 9.5V21h14V9.5M10 21v-6h4v6"/></svg>Home</button>
     <button type="button" class="nb" id="navPhoto" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="14" r="3.5"/></svg>Foto</button>
+    <button type="button" class="nb" id="navProfile" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Profilo</button>
   </div></nav>
 </div>
 
@@ -383,12 +418,13 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) { re
 let view = 'home', photos = [], pIdx = -1, pTimer = null, podOn = false;
 const urls = new Map(), SHOW = 3000;
 function setView(v) {
-  view = v; $('viewHome').hidden = v !== 'home'; $('viewPhoto').hidden = v !== 'photo';
-  $('navHome').setAttribute('aria-current', v === 'home'); $('navPhoto').setAttribute('aria-current', v === 'photo');
+  view = v; $('viewHome').hidden = v !== 'home'; $('viewPhoto').hidden = v !== 'photo'; $('viewProfile').hidden = v !== 'profile';
+  $('navHome').setAttribute('aria-current', v === 'home'); $('navPhoto').setAttribute('aria-current', v === 'photo'); $('navProfile').setAttribute('aria-current', v === 'profile');
+  if (v === 'profile') loadProfile();
   if (v === 'home' && map) map.invalidateSize();
   podSync(); window.scrollTo(0, 0);
 }
-$('navHome').onclick = () => setView('home'); $('navPhoto').onclick = () => setView('photo');
+$('navHome').onclick = () => setView('home'); $('navPhoto').onclick = () => setView('photo'); $('navProfile').onclick = () => setView('profile');
 const hhmm = iso => new Date(iso).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
 function podSync() { podRun(!document.hidden && current === 'home' && view === 'home'); }
 function podRun(on) {
@@ -482,6 +518,36 @@ $('file').onchange = async e => {
   finally { $('pickBtn').disabled = false; }
 };
 
+/* ---------- Profilo ---------- */
+function drawProfile() {
+  const [c, f] = pal(uid());
+  $('avatar').innerHTML = man(c, f); $('profName').textContent = myName; $('profMail').textContent = session.user.email || '';
+}
+async function loadProfile() {
+  if (!sb || !session) return;
+  drawProfile(); $('pName').value = myName; $('nameErr').textContent = ''; $('nameOk').hidden = true;
+  const [a, b] = await Promise.all([
+    sb.from('profiles').select('created_at').eq('id', uid()).maybeSingle(),
+    sb.from('photos').select('id', { count: 'exact', head: true }).eq('user_id', uid())
+  ]);
+  if (a.data) $('stSince').textContent = new Date(a.data.created_at).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
+  if (b.count != null) $('stPhotos').textContent = b.count;
+}
+$('pName').addEventListener('input', () => { $('nameErr').textContent = ''; $('nameOk').hidden = true; });
+$('nameForm').onsubmit = async e => {
+  e.preventDefault();
+  const n = $('pName').value.trim(); $('nameOk').hidden = true;
+  if (!n) return bad($('pName'), $('nameErr'), 'Scrivi un nome o un soprannome.');
+  if (n === myName) return;
+  await busy($('nameBtn'), 'Salvo…', async () => {
+    const r = await sb.from('profiles').update({ name: n }).eq('id', uid()).select('name').maybeSingle();
+    if (r.error || !r.data) return $('nameErr').textContent = 'Non sono riuscito a salvare. Riprova.';
+    myName = r.data.name; names.set(uid(), myName); $('hello').textContent = 'Ciao, ' + myName;
+    $('nameOk').hidden = false; drawProfile(); chips();
+  });
+};
+$('profOut').onclick = $('outBtn').onclick;
+
 /* ---------- Condivisione posizione ---------- */
 let sharing = false, watch = null, last = null;
 function setShareUI(msg) {
@@ -518,5 +584,6 @@ function onGeoErr(e) {
 $('shareBtn').onclick = () => sharing ? stopShare() : startShare();
 })();
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
 </body>
 </html>
