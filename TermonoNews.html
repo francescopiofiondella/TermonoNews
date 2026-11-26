@@ -1,0 +1,583 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>TermonoNews</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: schermata unica da telefono. Il gruppo di amici (cerchi con faccia) in alto, scheda con schede Accedi / Crea account nella zona del pollice. */
+  :root {
+    --bg: #F0EDFF;
+    --surface: #FFFFFF;
+    --field: #F7F5FF;
+    --ink: #1B1740;
+    --muted: #5C5880;
+    --line: #D8D3F1;
+    --accent: #5B3DF5;
+    --on-accent: #FFFFFF;
+    --danger: #B42318;
+    --c-pink: #FF5C8A;
+    --c-yellow: #FFC93C;
+    --c-teal: #2EC4B6;
+    --c-orange: #FF8A3D;
+    --face: #1B1740;
+    --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+    --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12102B;
+      --surface: #1C1A3F;
+      --field: #15133A;
+      --ink: #F0EEFF;
+      --muted: #A9A4D4;
+      --line: #34306B;
+      --accent: #8F7BFF;
+      --on-accent: #12102B;
+      --danger: #FF8A80;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12102B;
+    --surface: #1C1A3F;
+    --field: #15133A;
+    --ink: #F0EEFF;
+    --muted: #A9A4D4;
+    --line: #34306B;
+    --accent: #8F7BFF;
+    --on-accent: #12102B;
+    --danger: #FF8A80;
+    color-scheme: dark;
+  }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.45;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .app {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-block: 20px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    max-width: 480px;
+    margin-inline: auto;
+  }
+
+  /* Marchio */
+  .brand { display: flex; flex-direction: column; gap: 10px; }
+  .pill {
+    align-self: flex-start;
+    margin: 0;
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: 999px;
+  }
+  .brand-name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 2.75rem;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
+  }
+  .crew { display: block; width: 100%; height: auto; max-width: 100%; margin-top: 6px; overflow: visible; }
+  .bob { animation: bob 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .bob.b2 { animation-delay: 0.35s; }
+  .bob.b3 { animation-delay: 0.7s; }
+  .bob.b4 { animation-delay: 1.05s; }
+  .bob.b5 { animation-delay: 1.4s; }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* Scheda */
+  .sheet {
+    margin-top: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 16px 18px 18px;
+    box-shadow: 0 10px 30px rgba(40, 20, 120, 0.10);
+  }
+  .sheet h2 {
+    margin: 0 0 2px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.625rem;
+    letter-spacing: -0.01em;
+  }
+  .lead { margin: 0 0 16px; color: var(--muted); font-size: 0.9375rem; }
+
+  /* Schede */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 16px;
+    background: var(--field);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+  }
+  .tab {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: transparent;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .tab[aria-selected="true"] { color: var(--on-accent); background: var(--accent); }
+
+  form { display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field label { font-weight: 600; font-size: 0.9375rem; }
+  .control { position: relative; display: flex; }
+  .control input {
+    width: 100%;
+    min-width: 0;
+    height: 52px;
+    padding: 0 14px;
+    font: inherit;
+    font-size: 16px; /* evita lo zoom automatico su iPhone */
+    color: var(--ink);
+    background: var(--field);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+  }
+  .control input.has-toggle { padding-right: 86px; }
+  .control input::placeholder { color: var(--muted); opacity: 0.8; }
+  .control input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+  .control input[aria-invalid="true"] { border-color: var(--danger); }
+  .toggle {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    height: 44px;
+    min-width: 72px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .hint { margin: 0; font-size: 0.8125rem; color: var(--muted); }
+  .err { margin: 0; font-size: 0.875rem; color: var(--danger); }
+  .err:empty { display: none; }
+
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 0.9375rem; cursor: pointer; }
+  .check input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
+  .linkbtn {
+    min-height: 44px;
+    padding: 0 4px;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .note {
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 54px;
+    font: inherit;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--on-accent);
+    background: var(--accent);
+    border: 0;
+    border-radius: 16px;
+    cursor: pointer;
+  }
+  .btn:active { transform: translateY(1px); filter: brightness(0.95); }
+  .btn[disabled] { opacity: 0.75; cursor: progress; }
+  .btn.ghost { color: var(--ink); background: transparent; border: 1.5px solid var(--line); }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2.5px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+    border-top-color: var(--on-accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .or {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0 12px;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .foot { margin: 0; text-align: center; font-size: 0.8125rem; color: var(--muted); }
+
+  button:focus-visible, .check input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bob { animation: none; }
+    .spinner { animation-duration: 2s; }
+  }
+</style>
+
+<main class="app">
+  <header class="brand">
+    <p class="pill">Comitiva Termotetti</p>
+    <h1 class="brand-name">TermonoNews</h1>
+    <svg class="crew" viewBox="0 0 360 150" role="img" aria-label="Cinque amici sorridenti, disegnati come cerchi colorati" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="var(--bg)" stroke-width="5">
+        <g class="bob">
+          <circle cx="48" cy="92" r="42" fill="var(--c-pink)"/>
+          <circle cx="36" cy="86" r="4.5" fill="var(--face)" stroke="none"/>
+          <circle cx="58" cy="86" r="4.5" fill="var(--face)" stroke="none"/>
+          <path d="M33 102 q15 14 30 0" fill="none" stroke="var(--face)" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <g class="bob b2">
+          <circle cx="122" cy="68" r="48" fill="var(--c-yellow)"/>
+          <circle cx="108" cy="62" r="5" fill="var(--face)" stroke="none"/>
+          <circle cx="134" cy="62" r="5" fill="var(--face)" stroke="none"/>
+          <path d="M104 80 q18 18 36 0" fill="none" stroke="var(--face)" stroke-width="4.5" stroke-linecap="round"/>
+        </g>
+        <g class="bob b3">
+          <circle cx="198" cy="96" r="40" fill="var(--c-teal)"/>
+          <circle cx="187" cy="90" r="4.5" fill="var(--face)" stroke="none"/>
+          <circle cx="209" cy="90" r="4.5" fill="var(--face)" stroke="none"/>
+          <ellipse cx="198" cy="107" rx="9" ry="7" fill="var(--face)" stroke="none"/>
+        </g>
+        <g class="bob b4">
+          <circle cx="266" cy="64" r="46" fill="var(--accent)"/>
+          <circle cx="252" cy="58" r="5" fill="#FFFFFF" stroke="none"/>
+          <circle cx="278" cy="58" r="5" fill="#FFFFFF" stroke="none"/>
+          <path d="M250 76 q16 16 32 0" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+        </g>
+        <g class="bob b5">
+          <circle cx="324" cy="98" r="34" fill="var(--c-orange)"/>
+          <circle cx="314" cy="93" r="4" fill="var(--face)" stroke="none"/>
+          <circle cx="334" cy="93" r="4" fill="var(--face)" stroke="none"/>
+          <path d="M313 106 q11 11 22 0" fill="none" stroke="var(--face)" stroke-width="4" stroke-linecap="round"/>
+        </g>
+      </g>
+    </svg>
+  </header>
+
+  <section class="sheet" id="authView" aria-labelledby="authTitle">
+    <h2 class="sr-only" id="authTitle">Accesso a TermonoNews</h2>
+
+    <div class="tabs" role="tablist" aria-label="Accedi o crea un account">
+      <button type="button" class="tab" role="tab" id="tabLogin" aria-selected="true" aria-controls="panelLogin">Accedi</button>
+      <button type="button" class="tab" role="tab" id="tabSignup" aria-selected="false" aria-controls="panelSignup" tabindex="-1">Crea account</button>
+    </div>
+
+    <div role="tabpanel" id="panelLogin" aria-labelledby="tabLogin">
+      <p class="lead">Bentornato. Entra con il tuo account.</p>
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="user">Email o nome utente</label>
+          <div class="control">
+            <input id="user" name="username" type="text" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="nome@email.it" aria-describedby="userErr">
+          </div>
+          <p class="err" id="userErr" role="alert"></p>
+        </div>
+
+        <div class="field">
+          <label for="pw">Password</label>
+          <div class="control">
+            <input id="pw" name="password" type="password" class="has-toggle" autocomplete="current-password" placeholder="La tua password" aria-describedby="pwErr">
+            <button type="button" class="toggle" id="pwToggle" aria-controls="pw" aria-pressed="false">Mostra</button>
+          </div>
+          <p class="err" id="pwErr" role="alert"></p>
+        </div>
+
+        <div class="row">
+          <label class="check" for="remember">
+            <input id="remember" type="checkbox">
+            Ricordami
+          </label>
+          <button type="button" class="linkbtn" id="forgotBtn">Password dimenticata?</button>
+        </div>
+        <p class="note" id="forgotNote" hidden>Chiedi a chi ha creato il gruppo di reimpostarti la password.</p>
+
+        <button class="btn" type="submit" id="submitBtn"><span id="submitLabel">Entra</span></button>
+      </form>
+    </div>
+
+    <div role="tabpanel" id="panelSignup" aria-labelledby="tabSignup" hidden>
+      <p class="lead">Ti serve un minuto. Poi sei dentro.</p>
+      <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="rName">Come ti chiami?</label>
+          <div class="control">
+            <input id="rName" name="name" type="text" autocomplete="name" autocapitalize="words" spellcheck="false" placeholder="Nome o soprannome" aria-describedby="rNameErr">
+          </div>
+          <p class="err" id="rNameErr" role="alert"></p>
+        </div>
+
+        <div class="field">
+          <label for="rEmail">Email</label>
+          <div class="control">
+            <input id="rEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="nome@email.it" aria-describedby="rEmailErr">
+          </div>
+          <p class="err" id="rEmailErr" role="alert"></p>
+        </div>
+
+        <div class="field">
+          <label for="rPw">Scegli una password</label>
+          <div class="control">
+            <input id="rPw" name="new-password" type="password" class="has-toggle" autocomplete="new-password" placeholder="Almeno 6 caratteri" aria-describedby="rPwErr">
+            <button type="button" class="toggle" id="rPwToggle" aria-controls="rPw" aria-pressed="false">Mostra</button>
+          </div>
+          <p class="err" id="rPwErr" role="alert"></p>
+        </div>
+
+        <button class="btn" type="submit" id="signupBtn"><span id="signupLabel">Crea account</span></button>
+      </form>
+    </div>
+
+    <div class="or">oppure</div>
+    <button class="btn ghost" type="button" id="guestBtn">Entra senza account</button>
+  </section>
+
+  <section class="sheet" id="welcomeView" aria-labelledby="welcomeTitle" hidden>
+    <h2 id="welcomeTitle">Ciao</h2>
+    <p class="lead" id="welcomeLead">Bentornato nella comitiva.</p>
+    <p class="note">Questa è una versione di prova: gli account veri del gruppo si collegano nel prossimo passaggio.</p>
+    <p></p>
+    <button class="btn ghost" type="button" id="logoutBtn">Esci</button>
+  </section>
+
+  <p class="foot">TermonoNews · versione 0.1</p>
+</main>
+
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+
+  var tabLogin = $('tabLogin'), tabSignup = $('tabSignup');
+  var panelLogin = $('panelLogin'), panelSignup = $('panelSignup');
+  var authView = $('authView'), welcomeView = $('welcomeView');
+  var welcomeTitle = $('welcomeTitle'), welcomeLead = $('welcomeLead');
+  var KEY = 'termononews:user';
+
+  function store(op, v) {
+    try {
+      if (op === 'get') return localStorage.getItem(KEY);
+      if (op === 'set') localStorage.setItem(KEY, v);
+      if (op === 'del') localStorage.removeItem(KEY);
+    } catch (e) {}
+    return null;
+  }
+
+  /* Schede */
+  function selectTab(which, moveFocus) {
+    var login = which === 'login';
+    tabLogin.setAttribute('aria-selected', login ? 'true' : 'false');
+    tabSignup.setAttribute('aria-selected', login ? 'false' : 'true');
+    tabLogin.tabIndex = login ? 0 : -1;
+    tabSignup.tabIndex = login ? -1 : 0;
+    panelLogin.hidden = !login;
+    panelSignup.hidden = login;
+    if (moveFocus) (login ? tabLogin : tabSignup).focus();
+  }
+  tabLogin.addEventListener('click', function () { selectTab('login'); });
+  tabSignup.addEventListener('click', function () { selectTab('signup'); });
+  [tabLogin, tabSignup].forEach(function (t) {
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        selectTab(t === tabLogin ? 'signup' : 'login', true);
+      }
+    });
+  });
+
+  /* Utilità */
+  function setErr(input, out, msg) {
+    out.textContent = msg;
+    if (msg) input.setAttribute('aria-invalid', 'true');
+    else input.removeAttribute('aria-invalid');
+  }
+  function clearOnInput(input, out) {
+    input.addEventListener('input', function () { setErr(input, out, ''); });
+  }
+  function wireToggle(btn, input) {
+    btn.addEventListener('click', function () {
+      var show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.textContent = show ? 'Nascondi' : 'Mostra';
+      btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+      input.focus();
+    });
+  }
+  function resetToggle(btn, input) {
+    input.type = 'password';
+    btn.textContent = 'Mostra';
+    btn.setAttribute('aria-pressed', 'false');
+  }
+  function startBusy(btn, labelEl, text) {
+    var orig = labelEl.textContent;
+    btn.disabled = true;
+    labelEl.textContent = text;
+    var sp = document.createElement('span');
+    sp.className = 'spinner';
+    sp.setAttribute('aria-hidden', 'true');
+    btn.insertBefore(sp, labelEl);
+    return function () {
+      btn.disabled = false;
+      labelEl.textContent = orig;
+      if (sp.parentNode) sp.parentNode.removeChild(sp);
+    };
+  }
+  function showWelcome(title, lead) {
+    welcomeTitle.textContent = title;
+    welcomeLead.textContent = lead;
+    authView.hidden = true;
+    welcomeView.hidden = false;
+    window.scrollTo(0, 0);
+  }
+
+  /* Accesso */
+  var user = $('user'), pw = $('pw'), userErr = $('userErr'), pwErr = $('pwErr');
+  var remember = $('remember'), pwToggle = $('pwToggle');
+  var forgotBtn = $('forgotBtn'), forgotNote = $('forgotNote');
+
+  var saved = store('get');
+  if (saved) { user.value = saved; remember.checked = true; }
+
+  wireToggle(pwToggle, pw);
+  clearOnInput(user, userErr);
+  clearOnInput(pw, pwErr);
+  forgotBtn.addEventListener('click', function () { forgotNote.hidden = !forgotNote.hidden; });
+
+  $('loginForm').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var u = user.value.trim();
+    var p = pw.value;
+    var firstBad = null;
+
+    if (!u) { setErr(user, userErr, 'Inserisci email o nome utente.'); firstBad = user; }
+    else setErr(user, userErr, '');
+
+    if (!p) { setErr(pw, pwErr, 'Inserisci la password.'); firstBad = firstBad || pw; }
+    else if (p.length < 6) { setErr(pw, pwErr, 'La password deve avere almeno 6 caratteri.'); firstBad = firstBad || pw; }
+    else setErr(pw, pwErr, '');
+
+    if (firstBad) { firstBad.focus(); return; }
+
+    if (remember.checked) store('set', u); else store('del');
+
+    var done = startBusy($('submitBtn'), $('submitLabel'), 'Un attimo…');
+    setTimeout(function () {
+      done();
+      showWelcome('Ciao, ' + u.split('@')[0] + '!', 'Bentornato nella comitiva.');
+    }, 700);
+  });
+
+  /* Crea account */
+  var rName = $('rName'), rEmail = $('rEmail'), rPw = $('rPw');
+  var rNameErr = $('rNameErr'), rEmailErr = $('rEmailErr'), rPwErr = $('rPwErr');
+  var rPwToggle = $('rPwToggle');
+
+  wireToggle(rPwToggle, rPw);
+  clearOnInput(rName, rNameErr);
+  clearOnInput(rEmail, rEmailErr);
+  clearOnInput(rPw, rPwErr);
+
+  $('signupForm').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var n = rName.value.trim();
+    var m = rEmail.value.trim();
+    var p = rPw.value;
+    var firstBad = null;
+
+    if (!n) { setErr(rName, rNameErr, 'Scrivi il tuo nome o soprannome.'); firstBad = rName; }
+    else setErr(rName, rNameErr, '');
+
+    if (!m) { setErr(rEmail, rEmailErr, 'Inserisci la tua email.'); firstBad = firstBad || rEmail; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)) { setErr(rEmail, rEmailErr, 'Controlla l\'email: sembra incompleta.'); firstBad = firstBad || rEmail; }
+    else setErr(rEmail, rEmailErr, '');
+
+    if (!p) { setErr(rPw, rPwErr, 'Scegli una password.'); firstBad = firstBad || rPw; }
+    else if (p.length < 6) { setErr(rPw, rPwErr, 'La password deve avere almeno 6 caratteri.'); firstBad = firstBad || rPw; }
+    else setErr(rPw, rPwErr, '');
+
+    if (firstBad) { firstBad.focus(); return; }
+
+    var done = startBusy($('signupBtn'), $('signupLabel'), 'Creo l\'account…');
+    setTimeout(function () {
+      done();
+      showWelcome('Benvenuto, ' + n + '!', 'Il tuo account è pronto.');
+    }, 800);
+  });
+
+  /* Accesso diretto */
+  $('guestBtn').addEventListener('click', function () {
+    showWelcome('Ciao, ospite!', 'Stai entrando senza account.');
+  });
+
+  /* Esci */
+  $('logoutBtn').addEventListener('click', function () {
+    pw.value = '';
+    rPw.value = '';
+    resetToggle(pwToggle, pw);
+    resetToggle(rPwToggle, rPw);
+    welcomeView.hidden = true;
+    authView.hidden = false;
+    selectTab('login');
+    (user.value ? pw : user).focus();
+  });
+})();
+</script>
+
+</body></html>
