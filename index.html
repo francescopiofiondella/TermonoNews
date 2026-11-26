@@ -38,16 +38,18 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .foot{margin:0;text-align:center;font-size:.8125rem;color:var(--muted)}
 .foot a{color:inherit}
 /* Home */
-.home{position:fixed;inset:0}
+.home{max-width:480px;min-height:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 12px calc(16px + env(safe-area-inset-bottom))}
+.mapbox{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--bg);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 30px rgba(40,20,120,.15);cursor:pointer}
+.mapbox.full{position:fixed;inset:0;z-index:3000;width:auto;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none;cursor:auto}
 #map{position:absolute;inset:0;background:var(--bg);font:inherit}
-.top,.dock{position:absolute;left:0;right:0;z-index:1000;pointer-events:none;display:flex;gap:8px;padding:0 12px}
-.top{top:0;padding-top:calc(10px + env(safe-area-inset-top));align-items:flex-start}
-.top>*,.dock>*{pointer-events:auto}
+.maphint{position:absolute;left:10px;bottom:10px;z-index:1000;padding:6px 12px;font-size:.8125rem;font-weight:700;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;pointer-events:none}
+.mapctl{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:1000;display:flex;gap:8px}
+.mapbox:not(.full) .mapctl,.mapbox.full .maphint{display:none}
+.top{display:flex;gap:8px;align-items:center}
 .logo{flex:1;min-width:0;padding:8px 14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 4px 16px rgba(40,20,120,.15)}
 .logo b{display:block;font:800 1.25rem/1 var(--d);letter-spacing:-.02em}
 .logo span{font-size:.8125rem;color:var(--muted)}
 .sm{width:auto;height:48px;padding:0 16px;font-size:.9375rem;background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:0 4px 16px rgba(40,20,120,.15)}
-.dock{bottom:0;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 .card{width:100%;max-width:480px;margin:0 auto;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 30px rgba(40,20,120,.2)}
 .status{margin:8px 0 10px;font-size:.875rem;color:var(--muted)}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
@@ -105,11 +107,15 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 </main>
 
 <div class="home" id="homeScreen" hidden>
-  <div id="map"></div>
   <div class="top">
     <div class="logo"><b>TermonoNews</b><span id="hello"></span></div>
     <button class="btn sm" type="button" id="fitBtn">Tutti</button>
     <button class="btn sm" type="button" id="outBtn">Esci</button>
+  </div>
+  <div class="mapbox" id="mapbox">
+    <div id="map"></div>
+    <span class="maphint">Tocca per ingrandire</span>
+    <div class="mapctl"><button class="btn sm" type="button" id="fitBtn2">Tutti</button><button class="btn sm" type="button" id="closeMap">Chiudi</button></div>
   </div>
   <div class="dock"><div class="card">
     <button class="btn" type="button" id="shareBtn">Condividi la mia posizione</button>
@@ -234,7 +240,7 @@ function setPin(id, lat, lng, iso) {
   let p = pins.get(id);
   if (!p) {
     p = { lat, lng, t };
-    p.marker = L.marker([lat, lng], { icon: icon(id, p), zIndexOffset: id === uid() ? 1000 : 0, keyboard: false }).addTo(map);
+    p.marker = L.marker([lat, lng], { icon: icon(id, p), zIndexOffset: id === uid() ? 1000 : 0, keyboard: false, interactive: false }).addTo(map);
     p.key = key(id, p); pins.set(id, p);
   } else {
     p.t = t; glide(p, lat, lng); redraw(id);
@@ -256,9 +262,18 @@ function dropPin(id) { const p = pins.get(id); if (p) { cancelAnimationFrame(p.r
 function fitAll() {
   if (!pins.size) return;
   const b = L.latLngBounds([...pins.values()].map(p => [p.lat, p.lng]));
-  map.fitBounds(b, { paddingTopLeft: [50, 100], paddingBottomRight: [50, 260], maxZoom: 16 });
+  map.fitBounds(b, { padding: [30, 30], maxZoom: 16 });
 }
 $('fitBtn').onclick = fitAll;
+let full = false, centered = false;
+function lock(on) { for (const h of ['dragging', 'touchZoom', 'doubleClickZoom', 'scrollWheelZoom', 'boxZoom']) map[h][on ? 'disable' : 'enable'](); }
+function setFull(on) {
+  const c = map.getCenter(), z = map.getZoom(); full = on;
+  $('mapbox').classList.toggle('full', on); document.body.style.overflow = on ? 'hidden' : '';
+  lock(!on); map.invalidateSize(); map.setView(c, z, { animate: false });
+}
+$('closeMap').onclick = () => setFull(false);
+$('fitBtn2').onclick = fitAll;
 function chips() {
   const box = $('chips'); box.innerHTML = '';
   const list = [...pins].sort((a, b) => label(a[0]).localeCompare(label(b[0])));
@@ -283,7 +298,7 @@ async function refresh() {
   }
   pins.forEach((p, id) => redraw(id));
   chips();
-  if (!fitted && pins.size) { fitted = true; fitAll(); }
+  if (!fitted && pins.size) { fitted = true; const me = pins.get(uid()); if (me) { centered = true; map.setView([me.lat, me.lng], 15); } else fitAll(); }
 }
 function enterHome() {
   show('home');
@@ -291,6 +306,7 @@ function enterHome() {
   if (!map) {
     map = L.map('map', { zoomControl: false, attributionControl: false, worldCopyJump: true }).setView([42.5, 12.5], 5);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+    lock(true); map.on('click', () => { if (!full) setFull(true); });
   }
   map.invalidateSize(); refresh();
   chan = sb.channel('termono')
@@ -310,7 +326,7 @@ function enterHome() {
 function teardown() {
   clearInterval(tick); clearInterval(sync);
   if (chan) { sb.removeChannel(chan); chan = null; }
-  [...pins.keys()].forEach(dropPin); names.clear(); fitted = false;
+  [...pins.keys()].forEach(dropPin); names.clear(); fitted = false; centered = false; if (full) setFull(false);
   if (watch !== null) { navigator.geolocation.clearWatch(watch); watch = null; } sharing = false;
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
@@ -324,7 +340,7 @@ function setShareUI(msg) {
 }
 function startShare() {
   if (!navigator.geolocation) return setShareUI('Questo browser non può leggere la posizione.');
-  sharing = true; last = null; store('set', 'termononews:share', '1'); setShareUI('Cerco il segnale GPS…');
+  sharing = true; last = null; centered = false; store('set', 'termononews:share', '1'); setShareUI('Cerco il segnale GPS…');
   watch = navigator.geolocation.watchPosition(onFix, onGeoErr, { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
 }
 async function stopShare() {
@@ -336,6 +352,7 @@ async function stopShare() {
 async function onFix(g) {
   const lat = g.coords.latitude, lng = g.coords.longitude, now = Date.now();
   setPin(uid(), lat, lng); chips();
+  if (!centered) { centered = true; map.setView([lat, lng], 15); }
   const moved = last ? map.distance([last.lat, last.lng], [lat, lng]) : 1e9;
   if (last && now - last.t < 5000) return;
   if (last && moved < 8 && now - last.t < 30000) return;
