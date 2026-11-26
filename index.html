@@ -38,7 +38,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .foot{margin:0;text-align:center;font-size:.8125rem;color:var(--muted)}
 .foot a{color:inherit}
 /* Home */
-.home{max-width:480px;min-height:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 12px calc(16px + env(safe-area-inset-bottom))}
+.home{max-width:480px;min-height:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 12px calc(100px + env(safe-area-inset-bottom))}
 .mapbox{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--bg);border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 30px rgba(40,20,120,.15);cursor:pointer}
 .mapbox.full{position:fixed;inset:0;z-index:3000;width:auto;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none;cursor:auto}
 #map{position:absolute;inset:0;background:var(--bg);font:inherit}
@@ -66,6 +66,29 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .pin.me .tag{color:var(--on);background:var(--accent);border-color:var(--accent)}
 .pin.stale{opacity:.5;filter:grayscale(.8)}
 @media(prefers-reduced-motion:reduce){.man{animation:none}}
+/* Nav bar e foto */
+.view{display:flex;flex-direction:column;gap:12px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:2000;display:flex;justify-content:center;padding:0 12px calc(8px + env(safe-area-inset-bottom));pointer-events:none}
+.bar{pointer-events:auto;width:100%;max-width:480px;display:flex;gap:4px;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:0 8px 28px rgba(40,20,120,.25)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:56px;color:var(--muted);font-size:.75rem;font-weight:700;background:none;border:0;border-radius:16px;cursor:pointer}
+.nb svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nb[aria-current=true]{color:var(--on);background:var(--accent)}
+.card h2{font-size:1.25rem}
+.podh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px}
+.podh b{font:700 1.25rem var(--d)}.podh small{color:var(--muted)}
+.stage{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--field);border:1.5px solid var(--line);border-radius:16px}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}
+.stage.on img{opacity:1;transform:scale(1);transition:opacity .4s,transform 3.4s linear}
+.stage img.z{transform:scale(1.04)}
+.cap{position:absolute;left:8px;bottom:8px;padding:4px 10px;font-size:.8125rem;font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:999px;opacity:0;transition:opacity .4s}
+.stage.on .cap{opacity:1}
+.stage .empty{position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.th{position:relative;aspect-ratio:1;overflow:hidden;background:var(--field);border:1px solid var(--line);border-radius:12px}
+.th img{width:100%;height:100%;object-fit:cover;display:block}
+.th span{position:absolute;left:4px;bottom:4px;max-width:calc(100% - 8px);padding:1px 7px;font-size:.6875rem;font-weight:700;background:var(--surface);border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.th button{position:absolute;top:4px;right:4px;width:28px;height:28px;padding:0;font-weight:700;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:50%;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.stage.on img{transition:opacity .4s}.stage img.z{transform:none}}
 </style>
 </head>
 <body>
@@ -112,17 +135,41 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     <button class="btn sm" type="button" id="fitBtn">Tutti</button>
     <button class="btn sm" type="button" id="outBtn">Esci</button>
   </div>
+  <div class="view" id="viewHome">
   <div class="mapbox" id="mapbox">
     <div id="map"></div>
     <span class="maphint">Tocca per ingrandire</span>
     <div class="mapctl"><button class="btn sm" type="button" id="fitBtn2">Tutti</button><button class="btn sm" type="button" id="closeMap">Chiudi</button></div>
   </div>
+  <section class="card" id="podCard">
+    <div class="podh"><b>Foto del giorno</b><small id="podCount"></small></div>
+    <div class="stage" id="stage"><img id="podImg" alt=""><span class="cap" id="podCap"></span><p class="empty" id="podEmpty">Ancora nessuna foto oggi. Caricane una dalla scheda Foto!</p></div>
+  </section>
   <div class="dock"><div class="card">
     <button class="btn" type="button" id="shareBtn">Condividi la mia posizione</button>
     <p class="status" id="status"></p>
     <div class="chips" id="chips"></div>
     <p class="foot" style="margin-top:8px">Mappa © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></p>
   </div></div>
+  </div>
+  <div class="view" id="viewPhoto" hidden>
+    <section class="card">
+      <h2>Carica una foto</h2>
+      <p class="lead">Compare nella Foto del giorno della Home e ci resta in rotazione per 24 ore.</p>
+      <input type="file" id="file" accept="image/*" hidden>
+      <button class="btn" type="button" id="pickBtn">Scegli o scatta una foto</button>
+      <p class="status" id="upStatus"></p>
+    </section>
+    <section class="card">
+      <h2>Foto di oggi</h2>
+      <p class="empty" id="gridEmpty">Nessuna foto nelle ultime 24 ore.</p>
+      <div class="grid" id="grid"></div>
+    </section>
+  </div>
+  <nav class="nav" aria-label="Sezioni"><div class="bar">
+    <button type="button" class="nb" id="navHome" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8M5 9.5V21h14V9.5M10 21v-6h4v6"/></svg>Home</button>
+    <button type="button" class="nb" id="navPhoto" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="14" r="3.5"/></svg>Foto</button>
+  </div></nav>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -308,7 +355,7 @@ function enterHome() {
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
     lock(true); map.on('click', () => { if (!full) setFull(true); });
   }
-  map.invalidateSize(); refresh();
+  map.invalidateSize(); refresh(); setView('home'); loadPhotos(true);
   chan = sb.channel('termono')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'positions' }, e => {
       if (e.eventType === 'DELETE') { dropPin(e.old.user_id); }
@@ -317,19 +364,123 @@ function enterHome() {
       chips();
     })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, refresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'photos' }, e => loadPhotos(e.eventType === 'INSERT'))
     .subscribe(s => { if (s === 'SUBSCRIBED') refresh(); });
   tick = setInterval(() => { pins.forEach((p, id) => { if (Date.now() - p.t > GONE && id !== uid()) dropPin(id); else redraw(id); }); chips(); }, 30000);
-  sync = setInterval(refresh, 60000);
+  sync = setInterval(() => { refresh(); loadPhotos(); }, 60000);
   if (store('get', 'termononews:share') === '1') startShare();
   else setShareUI();
 }
 function teardown() {
-  clearInterval(tick); clearInterval(sync);
+  clearInterval(tick); clearInterval(sync); podRun(false); photos = []; pIdx = -1; urls.clear();
   if (chan) { sb.removeChannel(chan); chan = null; }
   [...pins.keys()].forEach(dropPin); names.clear(); fitted = false; centered = false; if (full) setFull(false);
   if (watch !== null) { navigator.geolocation.clearWatch(watch); watch = null; } sharing = false;
 }
-document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { refresh(); loadPhotos(); } podSync(); });
+
+/* ---------- Nav e foto del giorno ---------- */
+let view = 'home', photos = [], pIdx = -1, pTimer = null, podOn = false;
+const urls = new Map(), SHOW = 3000;
+function setView(v) {
+  view = v; $('viewHome').hidden = v !== 'home'; $('viewPhoto').hidden = v !== 'photo';
+  $('navHome').setAttribute('aria-current', v === 'home'); $('navPhoto').setAttribute('aria-current', v === 'photo');
+  if (v === 'home' && map) map.invalidateSize();
+  podSync(); window.scrollTo(0, 0);
+}
+$('navHome').onclick = () => setView('home'); $('navPhoto').onclick = () => setView('photo');
+const hhmm = iso => new Date(iso).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+function podSync() { podRun(!document.hidden && current === 'home' && view === 'home'); }
+function podRun(on) {
+  podOn = on;
+  if (on) { if (!pTimer) cycle(); }
+  else { clearTimeout(pTimer); pTimer = null; $('stage').classList.remove('on'); }
+}
+function cycle() {
+  const st = $('stage'), img = $('podImg');
+  clearTimeout(pTimer); pTimer = null;
+  $('podEmpty').hidden = photos.length > 0;
+  if (!photos.length || !podOn) return;
+  pIdx = (pIdx + 1) % photos.length;
+  const p = photos[pIdx], pre = new Image();
+  pre.onload = () => {
+    if (!podOn) return;
+    img.classList.add('z'); img.src = p.url; $('podCap').textContent = label(p.user_id) + ' · ' + hhmm(p.created_at);
+    void img.offsetWidth; img.classList.remove('z'); st.classList.add('on');
+    pTimer = setTimeout(() => { st.classList.remove('on'); pTimer = setTimeout(cycle, 500); }, SHOW);
+  };
+  pre.onerror = () => { pTimer = setTimeout(cycle, 1000); };
+  pre.src = p.url;
+}
+async function loadPhotos(jump) {
+  if (!sb || !session) return;
+  const since = new Date(Date.now() - 24 * 3600e3).toISOString();
+  const r = await sb.from('photos').select('id,user_id,path,created_at').gte('created_at', since).order('created_at', { ascending: false }).limit(60);
+  if (r.error || !r.data) return;
+  const need = r.data.filter(p => { const c = urls.get(p.path); return !c || c.exp - Date.now() < 600e3; }).map(p => p.path);
+  if (need.length) {
+    const s = await sb.storage.from('photos').createSignedUrls(need, 3600);
+    if (s.data) s.data.forEach(x => { if (x.signedUrl) urls.set(x.path, { url: x.signedUrl, exp: Date.now() + 3600e3 }); });
+  }
+  const cur = photos[pIdx];
+  photos = r.data.filter(p => urls.has(p.path)).map(p => ({ ...p, url: urls.get(p.path).url }));
+  pIdx = jump || !cur ? -1 : photos.findIndex(p => p.id === cur.id);
+  $('podCount').textContent = photos.length ? photos.length + (photos.length === 1 ? ' foto' : ' foto') + ' · ultime 24 h' : '';
+  $('podEmpty').hidden = photos.length > 0;
+  drawGrid();
+  if (podOn && !pTimer) cycle();
+}
+function drawGrid() {
+  const g = $('grid'); g.innerHTML = ''; $('gridEmpty').hidden = photos.length > 0;
+  for (const p of photos) {
+    const d = document.createElement('div'), im = document.createElement('img'), n = document.createElement('span');
+    d.className = 'th'; im.src = p.url; im.alt = 'Foto di ' + label(p.user_id); im.loading = 'lazy'; n.textContent = label(p.user_id);
+    d.append(im, n);
+    if (p.user_id === uid()) {
+      const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Elimina foto');
+      x.onclick = () => delPhoto(p); d.appendChild(x);
+    }
+    g.appendChild(d);
+  }
+}
+async function delPhoto(p) {
+  if (!confirm('Eliminare questa foto?')) return;
+  const r = await sb.from('photos').delete().eq('id', p.id);
+  if (r.error) return setUp('Non riesco a eliminare la foto.');
+  await sb.storage.from('photos').remove([p.path]); urls.delete(p.path); loadPhotos();
+}
+const setUp = m => { $('upStatus').textContent = m || ''; };
+function shrink(file) {
+  return new Promise((res, rej) => {
+    const u = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      URL.revokeObjectURL(u);
+      const k = Math.min(1, 1280 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas');
+      c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      c.toBlob(b => b ? res(b) : rej(new Error('blob')), 'image/jpeg', .82);
+    };
+    im.onerror = () => { URL.revokeObjectURL(u); rej(new Error('img')); };
+    im.src = u;
+  });
+}
+$('pickBtn').onclick = () => $('file').click();
+$('file').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  if (!f.type.startsWith('image/')) return setUp('Scegli un file immagine.');
+  $('pickBtn').disabled = true; setUp('Preparo la foto…');
+  try {
+    const blob = await shrink(f), path = uid() + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
+    setUp('Carico la foto…');
+    let r = await sb.storage.from('photos').upload(path, blob, { contentType: 'image/jpeg' });
+    if (r.error) throw r.error;
+    r = await sb.from('photos').insert({ path });
+    if (r.error) { await sb.storage.from('photos').remove([path]); throw r.error; }
+    setUp('Foto caricata! La vedi nella Foto del giorno.'); await loadPhotos(true);
+  } catch (err) { setUp('Non sono riuscito a caricare la foto. Riprova.'); }
+  finally { $('pickBtn').disabled = false; }
+};
 
 /* ---------- Condivisione posizione ---------- */
 let sharing = false, watch = null, last = null;
