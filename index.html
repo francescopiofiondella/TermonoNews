@@ -104,6 +104,22 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .stats{display:flex;gap:8px;margin-top:12px}
 .stats div{flex:1;padding:10px;background:var(--field);border:1px solid var(--line);border-radius:14px}
 .stats b{display:block;font:700 1.25rem var(--d)}.stats span{font-size:.8125rem;color:var(--muted)}
+/* Garage e moto */
+.pin.bike{width:110px}.pin.bike .tag{max-width:110px}
+.bikeman{width:64px;height:52px;overflow:visible;animation:hop 1s ease-in-out infinite}
+.mini{margin-top:2px;max-width:110px;padding:1px 9px;font:700 11px var(--b);color:var(--on);background:var(--accent);border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gar{display:flex;flex-direction:column;gap:8px;margin:14px 0 0;padding:0;list-style:none}
+.gv{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--field);border:1.5px solid var(--line);border-radius:16px}
+.gv.use{border-color:var(--accent)}
+.gv svg{flex:none;width:52px;height:42px}
+.gv b{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv button{height:44px;min-width:44px;padding:0 12px;font-weight:700;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;cursor:pointer}
+.gv .usebtn.on{color:var(--on);background:var(--accent);border-color:var(--accent)}
+@media(prefers-reduced-motion:reduce){.bikeman{animation:none}}
+/* Avviso vicinanza */
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));z-index:4000;width:calc(100% - 24px);max-width:456px;padding:14px 16px;font-weight:700;color:var(--on);background:var(--accent);border-radius:18px;box-shadow:0 8px 28px rgba(40,20,120,.35);transform:translate(-50%,-200%);transition:transform .35s}
+.toast.show{transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
 </head>
 <body>
@@ -186,7 +202,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       <div class="avatar" id="avatar"></div>
       <h2 id="profName"></h2>
       <p class="lead" id="profMail"></p>
-      <div class="stats"><div><b id="stPhotos">–</b><span>foto caricate</span></div><div><b id="stSince">–</b><span>nel gruppo dal</span></div></div>
+      <div class="stats"><div><b id="stPhotos">–</b><span>foto caricate</span></div><div><b id="stSince">–</b><span>nel gruppo dal</span></div><div><b id="stVeh">–</b><span>mezzi</span></div></div>
     </section>
     <section class="card">
       <h2>Il tuo nome</h2>
@@ -198,6 +214,16 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
         <button class="btn" type="submit" id="nameBtn">Salva</button>
       </form>
     </section>
+    <section class="card">
+      <h2>Il tuo garage</h2>
+      <p class="lead">Aggiungi i tuoi mezzi. Quando vai veloce compari sulla mappa come omino in moto, con il nome del mezzo.</p>
+      <form id="garForm" novalidate>
+        <div><label for="gName">Nome del mezzo</label><input id="gName" type="text" maxlength="30" autocomplete="off" placeholder="Es. Ducati Monster"></div>
+        <p class="err" id="garErr" role="alert"></p>
+        <button class="btn" type="submit" id="garBtn">Aggiungi al garage</button>
+      </form>
+      <ul class="gar" id="garList"></ul>
+    </section>
     <section class="card"><button class="btn ghost" type="button" id="profOut">Esci</button></section>
   </div>
   <nav class="nav" aria-label="Sezioni"><div class="bar">
@@ -206,6 +232,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     <button type="button" class="nb" id="navProfile" aria-current="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Profilo</button>
   </div></nav>
 </div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -313,19 +341,21 @@ function man(c, f) {
 const label = id => id === uid() ? 'Tu' : (names.get(id) || 'Amico');
 function icon(id, p) {
   const [c, f] = pal(id);
+  if (p.veh) return L.divIcon({ className: 'pinwrap', iconSize: [110, 96], iconAnchor: [55, 52],
+    html: `<div class="pin bike${id === uid() ? ' me' : ''}${Date.now() - p.t > STALE ? ' stale' : ''}">${rider(c, f, 'bikeman')}<span class="tag">${esc(label(id))}</span><span class="mini">${esc(p.veh)}</span></div>` });
   return L.divIcon({ className: 'pinwrap', iconSize: [84, 78], iconAnchor: [42, 56],
     html: `<div class="pin${id === uid() ? ' me' : ''}${Date.now() - p.t > STALE ? ' stale' : ''}" style="--x:0">${man(c, f).replace('class="man"', `class="man" style="animation-delay:-${(p.lat * 1e4 % 2.4).toFixed(2)}s"`)}<span class="tag">${esc(label(id))}</span></div>` });
 }
-function key(id, p) { return label(id) + (Date.now() - p.t > STALE); }
-function setPin(id, lat, lng, iso) {
+function key(id, p) { return label(id) + (Date.now() - p.t > STALE) + (p.veh || ''); }
+function setPin(id, lat, lng, iso, veh) {
   const t = iso ? Date.parse(iso) : Date.now();
   let p = pins.get(id);
   if (!p) {
-    p = { lat, lng, t };
+    p = { lat, lng, t, veh: veh || null };
     p.marker = L.marker([lat, lng], { icon: icon(id, p), zIndexOffset: id === uid() ? 1000 : 0, keyboard: false, interactive: false }).addTo(map);
     p.key = key(id, p); pins.set(id, p);
   } else {
-    p.t = t; glide(p, lat, lng); redraw(id);
+    p.t = t; p.veh = veh || null; glide(p, lat, lng); redraw(id);
   }
 }
 function redraw(id) { const p = pins.get(id); if (p && p.key !== key(id, p)) { p.key = key(id, p); p.marker.setIcon(icon(id, p)); } }
@@ -363,7 +393,7 @@ function chips() {
   for (const [id, p] of list) {
     const b = document.createElement('button'), i = document.createElement('i'), n = document.createElement('span'), s = document.createElement('small');
     b.className = 'chip'; b.type = 'button'; i.style.background = pal(id)[0];
-    n.textContent = label(id); s.textContent = ago(p.t);
+    n.textContent = label(id); s.textContent = (p.veh ? '🏍 ' + p.veh + ' · ' : '') + ago(p.t);
     b.append(i, n, s);
     b.onclick = () => map.flyTo([p.lat, p.lng], Math.max(map.getZoom(), 16));
     box.appendChild(b);
@@ -371,11 +401,12 @@ function chips() {
 }
 async function refresh() {
   if (!sb || current !== 'home') return;
-  const [pr, po] = await Promise.all([sb.from('profiles').select('id,name'), sb.from('positions').select('user_id,lat,lng,updated_at')]);
+  let [pr, po] = await Promise.all([sb.from('profiles').select('id,name'), sb.from('positions').select('user_id,lat,lng,updated_at,vehicle')]);
+  if (po.error) po = await sb.from('positions').select('user_id,lat,lng,updated_at');
   if (pr.data) pr.data.forEach(r => names.set(r.id, r.name));
   if (po.data) {
     const seen = new Set(po.data.map(r => r.user_id));
-    po.data.forEach(r => setPin(r.user_id, r.lat, r.lng, r.updated_at));
+    po.data.forEach(r => setPin(r.user_id, r.lat, r.lng, r.updated_at, r.vehicle));
     [...pins.keys()].forEach(id => { if (!seen.has(id) && !(id === uid() && sharing)) dropPin(id); });
   }
   pins.forEach((p, id) => redraw(id));
@@ -390,14 +421,15 @@ function enterHome() {
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
     lock(true); map.on('click', () => { if (!full) setFull(true); });
   }
-  map.invalidateSize(); refresh(); setView('home'); loadPhotos(true);
+  map.invalidateSize(); refresh(); setView('home'); loadPhotos(true); loadGarage();
   chan = sb.channel('termono')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'positions' }, e => {
       if (e.eventType === 'DELETE') { dropPin(e.old.user_id); }
-      else if (names.has(e.new.user_id)) setPin(e.new.user_id, e.new.lat, e.new.lng, e.new.updated_at);
+      else if (names.has(e.new.user_id)) setPin(e.new.user_id, e.new.lat, e.new.lng, e.new.updated_at, e.new.vehicle);
       else return refresh();
       chips();
     })
+    .on('broadcast', { event: 'approach' }, m => { const pl = m.payload || {}; if (pl.to === uid()) notifyApproach(names.get(pl.from) || pl.name || 'Un amico', pl.veh); })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, refresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'photos' }, e => loadPhotos(e.eventType === 'INSERT'))
     .subscribe(s => { if (s === 'SUBSCRIBED') refresh(); });
@@ -410,7 +442,7 @@ function teardown() {
   clearInterval(tick); clearInterval(sync); podRun(false); photos = []; pIdx = -1; urls.clear();
   if (chan) { sb.removeChannel(chan); chan = null; }
   [...pins.keys()].forEach(dropPin); names.clear(); fitted = false; centered = false; if (full) setFull(false);
-  if (watch !== null) { navigator.geolocation.clearWatch(watch); watch = null; } sharing = false;
+  if (watch !== null) { navigator.geolocation.clearWatch(watch); watch = null; } sharing = false; prev = null; notified.clear(); garage = []; ride = false; kmh = 0; lastFix = null;
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { refresh(); loadPhotos(); } podSync(); });
 
@@ -525,7 +557,7 @@ function drawProfile() {
 }
 async function loadProfile() {
   if (!sb || !session) return;
-  drawProfile(); $('pName').value = myName; $('nameErr').textContent = ''; $('nameOk').hidden = true;
+  loadGarage(); drawProfile(); $('pName').value = myName; $('nameErr').textContent = ''; $('nameOk').hidden = true;
   const [a, b] = await Promise.all([
     sb.from('profiles').select('created_at').eq('id', uid()).maybeSingle(),
     sb.from('photos').select('id', { count: 'exact', head: true }).eq('user_id', uid())
@@ -548,6 +580,62 @@ $('nameForm').onsubmit = async e => {
 };
 $('profOut').onclick = $('outBtn').onclick;
 
+/* ---------- Garage e modalità moto ---------- */
+const MOTO_ON = 20, MOTO_OFF = 12;   // km/h: sopra 20 diventi "in moto", sotto 12 torni omino (isteresi anti-sfarfallio)
+let garage = [], ride = false, kmh = 0, lastFix = null;
+const vehKey = () => 'termononews:veh:' + uid();
+const activeVeh = () => garage.find(v => v.id === store('get', vehKey())) || garage[0] || null;
+function rider(c, f, cls) {
+  return `<svg class="${cls || ''}" viewBox="0 0 64 52" aria-hidden="true"><ellipse cx="32" cy="50" rx="26" ry="2" fill="#000" opacity=".18"/>
+<g stroke="#1B1740" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="40" r="8.5" fill="#F0EDFF"/><circle cx="51" cy="40" r="8.5" fill="#F0EDFF"/>
+<path d="M13 40l9-9h18l7 3 4 6M47 25l4 15M43 24h7M33 19l11 5M27 30l6 9" fill="none"/>
+<path d="M20 31h22l-3-6H24z" fill="${c}"/><rect x="21" y="14" width="14" height="17" rx="6" fill="${c}"/><circle cx="28" cy="8" r="7.5" fill="${c}"/></g>
+<circle cx="25.5" cy="7.5" r="1.5" fill="${f}"/><circle cx="31" cy="7.5" r="1.5" fill="${f}"/>
+<path d="M25 11.2q3 2.6 6.4 0" fill="none" stroke="${f}" stroke-width="1.7" stroke-linecap="round"/></svg>`;
+}
+function updateRide(g, now) {
+  let v = g.coords.speed;
+  if ((v == null || isNaN(v)) && prev && g.coords.accuracy <= 30) v = map.distance([prev.lat, prev.lng], [g.coords.latitude, g.coords.longitude]) / Math.max(1, (now - prev.t) / 1000);
+  kmh = kmh * .5 + Math.max(0, v || 0) * 3.6 * .5;
+  const was = ride; ride = !!activeVeh() && kmh > (ride ? MOTO_OFF : MOTO_ON);
+  return ride !== was;
+}
+function forceSend() { if (sharing && lastFix) { last = null; onFix(lastFix); } }
+async function loadGarage() {
+  if (!sb || !session) return;
+  const r = await sb.from('vehicles').select('id,name').eq('user_id', uid()).order('created_at');
+  if (r.error) { $('garErr').textContent = 'Il garage non è ancora attivo: manca la tabella nel database.'; return; }
+  garage = r.data || []; drawGarage();
+}
+function drawGarage() {
+  const l = $('garList'), a = activeVeh(), [c, f] = pal(uid()); l.innerHTML = ''; $('stVeh').textContent = garage.length;
+  for (const v of garage) {
+    const li = document.createElement('li'), b = document.createElement('b'), u = document.createElement('button'), x = document.createElement('button'), on = !!a && a.id === v.id;
+    li.className = 'gv' + (on ? ' use' : ''); li.innerHTML = rider(c, f); b.textContent = v.name;
+    u.type = 'button'; u.className = 'usebtn' + (on ? ' on' : ''); u.textContent = on ? 'In uso' : 'Usa';
+    u.onclick = () => { store('set', vehKey(), v.id); drawGarage(); forceSend(); };
+    x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Elimina ' + v.name); x.onclick = () => delVeh(v);
+    li.append(b, u, x); l.appendChild(li);
+  }
+}
+async function delVeh(v) {
+  if (!confirm('Togliere «' + v.name + '» dal garage?')) return;
+  const r = await sb.from('vehicles').delete().eq('id', v.id);
+  if (r.error) return $('garErr').textContent = 'Non riesco a eliminare il mezzo. Riprova.';
+  garage = garage.filter(x => x.id !== v.id); drawGarage(); forceSend();
+}
+$('garForm').onsubmit = async e => {
+  e.preventDefault();
+  const n = $('gName').value.trim(); $('garErr').textContent = '';
+  if (!n) return bad($('gName'), $('garErr'), 'Scrivi il nome del mezzo.');
+  if (garage.length >= 6) return $('garErr').textContent = 'Il garage è pieno: massimo 6 mezzi.';
+  await busy($('garBtn'), 'Aggiungo…', async () => {
+    const r = await sb.from('vehicles').insert({ user_id: uid(), name: n }).select('id,name').maybeSingle();
+    if (r.error || !r.data) return $('garErr').textContent = 'Non sono riuscito ad aggiungere il mezzo. Riprova.';
+    garage.push(r.data); $('gName').value = ''; if (garage.length === 1) store('set', vehKey(), r.data.id); drawGarage(); forceSend();
+  });
+};
+
 /* ---------- Condivisione posizione ---------- */
 let sharing = false, watch = null, last = null;
 function setShareUI(msg) {
@@ -562,26 +650,63 @@ function startShare() {
 }
 async function stopShare() {
   if (watch !== null) navigator.geolocation.clearWatch(watch);
-  watch = null; const was = sharing; sharing = false; store('set', 'termononews:share', '0');
+  watch = null; const was = sharing; sharing = false; prev = null; notified.clear(); ride = false; kmh = 0; lastFix = null; store('set', 'termononews:share', '0');
   if (map && uid()) { dropPin(uid()); chips(); setShareUI(); }
   if (was && sb && session) await sb.from('positions').delete().eq('user_id', uid());
 }
 async function onFix(g) {
   const lat = g.coords.latitude, lng = g.coords.longitude, now = Date.now();
-  setPin(uid(), lat, lng); chips();
+  lastFix = g; const flip = updateRide(g, now);
+  setPin(uid(), lat, lng, null, ride ? activeVeh().name : null); chips(); checkNear(lat, lng, g);
   if (!centered) { centered = true; map.setView([lat, lng], 15); }
   const moved = last ? map.distance([last.lat, last.lng], [lat, lng]) : 1e9;
-  if (last && now - last.t < 5000) return;
-  if (last && moved < 8 && now - last.t < 30000) return;
+  if (!flip && last && now - last.t < 5000) return;
+  if (!flip && last && moved < 8 && now - last.t < 30000) return;
   last = { lat, lng, t: now };
-  const { error } = await sb.from('positions').upsert({ user_id: uid(), lat, lng, accuracy: Math.round(g.coords.accuracy) }, { onConflict: 'user_id' });
+  const row = { user_id: uid(), lat, lng, accuracy: Math.round(g.coords.accuracy) };
+  let { error } = await sb.from('positions').upsert({ ...row, speed: Math.round(kmh), vehicle: ride ? activeVeh().name : null }, { onConflict: 'user_id' });
+  if (error) ({ error } = await sb.from('positions').upsert(row, { onConflict: 'user_id' }));
   setShareUI(error ? 'Non riesco a salvare la posizione. Controlla di essere approvato.' : 'Stai condividendo (precisione ' + Math.round(g.coords.accuracy) + ' m). Tieni aperta questa pagina.');
 }
 function onGeoErr(e) {
   if (e.code === 1) { stopShare(); setShareUI('Permesso negato: abilita la posizione per questo sito nelle impostazioni del browser.'); }
   else setShareUI('Segnale GPS debole, continuo a cercare…');
 }
-$('shareBtn').onclick = () => sharing ? stopShare() : startShare();
+
+/* ---------- Avviso "sta venendo da te" ---------- */
+const NEAR = 10, FAR = 15, NEAR_V = 60, FAR_V = 90;   // a piedi 10/15 m, in moto 60/90 m           // entra a 10 m, "esce" a 15 m (evita avvisi ripetuti per via del GPS ballerino)
+const notified = new Map();          // id -> quando ho avvisato; si svuota quando l'altro si allontana oltre FAR
+let prev = null, toastT = null;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 6000);
+}
+function notifyApproach(name, veh) {
+  const msg = veh ? 'L’utente ' + name + ' si sta avvicinando a te con il suo fantastico ' + veh + '!' : 'L’utente ' + name + ' sta venendo da te';
+  toast(msg);
+  try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {}
+  if (document.hidden && 'Notification' in window && Notification.permission === 'granted' && navigator.serviceWorker)
+    navigator.serviceWorker.ready.then(r => r.showNotification('TermonoNews', { body: msg, icon: 'icons/icon-192.png', tag: 'approach', renotify: true })).catch(() => {});
+}
+function checkNear(lat, lng, g) {
+  const now = Date.now(), before = prev; prev = { lat, lng, t: now };
+  if (!chan || !before || g.coords.accuracy > 30) return;
+  const dt = (now - before.t) / 1000, step = map.distance([before.lat, before.lng], [lat, lng]);
+  const moving = (g.coords.speed != null && g.coords.speed > 0.5) || (dt > 0 && step >= 3 && step / dt > 0.5);
+  pins.forEach((p, id) => {
+    if (id === uid()) return;
+    if (now - p.t > STALE) { notified.delete(id); return; }
+    const d = map.distance([lat, lng], [p.lat, p.lng]);
+    const near = ride ? NEAR_V : NEAR, far = ride ? FAR_V : FAR;
+    if (d > far) { notified.delete(id); return; }
+    if (d > near || notified.has(id) || !moving) return;
+    if (d >= map.distance([before.lat, before.lng], [p.lat, p.lng])) return; // deve avvicinarsi, non allontanarsi
+    notified.set(id, now);
+    chan.send({ type: 'broadcast', event: 'approach', payload: { to: id, from: uid(), name: myName, veh: ride && activeVeh() ? activeVeh().name : null } });
+  });
+}
+function askNotif() { try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); } catch (e) {} }
+$('shareBtn').onclick = () => { if (sharing) stopShare(); else { askNotif(); startShare(); } };
 })();
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>

@@ -1,5 +1,5 @@
 // TermonoNews: service worker. Tiene in cache solo i file dell'app; dati, foto e mappa vanno sempre in rete.
-const V = 'termononews-v1';
+const V = 'termononews-v3';
 const SHELL = ['./', 'index.html', 'config.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
@@ -13,4 +13,8 @@ self.addEventListener('fetch', e => {
     if (res.ok) { const copy = res.clone(); caches.open(V).then(c => c.put(r, copy)); }
     return res;
   }).catch(() => caches.match(r).then(m => m || caches.match('index.html'))));
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => cs.length ? cs[0].focus() : self.clients.openWindow('./')));
 });
